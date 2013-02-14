@@ -22,5 +22,5 @@ function AS_MINIFY_Init() {
 }
 
 if ( !is_admin() ) {
-	add_action( 'plugins_loaded', 'AS_MINIFY_Init', 0 );
+	add_action( 'init', 'AS_MINIFY_Init', 0 );
 }
