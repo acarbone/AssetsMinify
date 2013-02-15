@@ -14,14 +14,28 @@ use Assetic\Asset\GlobAsset;
  */
 class Init {
 
+	protected $js, $css;
+
 	public function __construct() {
 
-		$js = new AssetCollection(array(
+		/*$js = new AssetCollection(array(
 		    new GlobAsset('/home/alessandro/development/sofinter/wp-content/themes/sofinter-restyle/js/*'),
-		));
+		));*/
 		// the code is merged when the asset is dumped
 		//echo $js->dump();
 
+		$this->js  = $this->enqueueScripts();
+		$this->css = $this->enqueueStyles();
+	}
+
+	public function enqueueScripts() {
+
+		return true;
+	}
+
+	public function enqueueStyles() {
+
+		return true;
 	}
 }
 
