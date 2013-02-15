@@ -21,6 +21,13 @@ function AS_MINIFY_Init() {
 	require AS_MINIFY_PATH . 'init.php';
 }
 
+spl_autoload_register(function( $classname ) {
+	$filename = str_replace("\\", "/", __DIR__ . "/$classname.php");
+
+	if ( file_exists( $filename ) )
+		include_once $filename;
+});
+
 if ( !is_admin() ) {
 	add_action( 'init', 'AS_MINIFY_Init', 0 );
 }
