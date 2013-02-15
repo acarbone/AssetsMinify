@@ -24,12 +24,15 @@ class Init {
 		// the code is merged when the asset is dumped
 		//echo $js->dump();
 
+		$this->scripts = wp_print_scripts();
 		$this->js  = $this->enqueueScripts();
 		$this->css = $this->enqueueStyles();
 	}
 
 	public function enqueueScripts() {
-
+		foreach ( $this->scripts as $script ) {
+			wp_dequeue_script($script);
+		}
 		return true;
 	}
 
@@ -39,5 +42,4 @@ class Init {
 	}
 }
 
-// Globalize the var first as it's needed globally.
 new Init();
