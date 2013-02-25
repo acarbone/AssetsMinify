@@ -7,19 +7,18 @@ namespace AssetsMinify;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Asset\AssetCache;
-use Assetic\AssetManager;
 use Assetic\Asset\GlobAsset;
-use Assetic\AssetWriter;
+use Assetic\FilterManager;
+use Assetic\AssetManager;
 use Assetic\Factory\AssetFactory;
-use Assetic\Factory\Worker\CacheBustingWorker;
-use Assetic\Cache\FilesystemCache;
 
 /**
  * Class that holds plugin's logic.
  */
 class Init {
 
+	public $factory;
+	protected $assetsPath;
 	protected $styles = array(),
 		$scripts = array(
 			'header' => array(),
@@ -28,11 +27,13 @@ class Init {
 
 	public function __construct() {
 
-		/*$js = new AssetCollection(array(
-		    new GlobAsset('/home/alessandro/development/sofinter/wp-content/themes/sofinter-restyle/js/*'),
-		));*/
-		// the code is merged when the asset is dumped
-		//echo $js->dump();
+		$this->factory = new AssetFactory( getcwd() );
+		$this->factory->setAssetManager(new AssetManager);
+		$this->factory->setFilterManager(new FilterManager);
+		$this->assetsPath = AS_MINIFY_PATH . 'assets/';
+
+		if ( !is_dir($this->assetsPath) )
+			mkdir($this->assetsPath, 0777);
 
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 		add_action( 'wp_head', array( $this, 'headerScripts' ) );
@@ -52,9 +53,7 @@ class Init {
 				$where = 'header';
 
 			//Save the source filename for every script enqueued.
-			$this->scripts[ $where ][ $handle ] = new FileAsset(
-				getcwd() . $wp_scripts->registered[$handle]->src
-			);
+			$this->scripts[ $where ][ $handle ] = getcwd() . $wp_scripts->registered[$handle]->src;
 
 			//Remove scripts from the queue so this plugin will be
 			//responsible to include all the scripts.
@@ -65,12 +64,8 @@ class Init {
 	}
 
 	public function headerScripts() {
-		//$factory = new AssetFactory( getcwd() . "/wp-content/uploads/" );
-		$js = new AssetCache(
-		    new FileAsset('/home/alessandro/development/wordpress/wp-includes/js/admin-bar.min.js'),
-    		new FilesystemCache( getcwd() . "/wp-content/uploads/" )
-		);
-		$js->dump();
+		file_put_contents( $this->assetsPath . "head.js", $this->factory->createAsset( $this->scripts['header'] )->dump() );
+		echo "<script type='text/javascript' src='" . $this->assetsPath . "head.js'></script>";
 		return true;
 	}
 
