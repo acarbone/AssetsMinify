@@ -36,8 +36,9 @@ class Init {
 		$this->jsFilters []= $this->jsMin;
 
 		//Define assets path to save asseticized files
-		$this->assetsUrl  = plugin_dir_url( __FILE__ )  . 'assets/';
-		$this->assetsPath = plugin_dir_path( __FILE__ ) . 'assets/';
+		$uploadsDir = wp_upload_dir();
+		$this->assetsUrl  = $uploadsDir['baseurl'] . '/am_assets/';
+		$this->assetsPath = $uploadsDir['basedir'] . '/am_assets/';
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
 
