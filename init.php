@@ -37,6 +37,7 @@ class Init {
 
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 		add_action( 'wp_head', array( $this, 'headerScripts' ) );
+		add_action( 'wp_footer', array( $this, 'footerScripts' ) );
 
 		$this->css = $this->enqueueStyles();
 	}
@@ -53,7 +54,7 @@ class Init {
 				$where = 'header';
 
 			//Save the source filename for every script enqueued.
-			$this->scripts[ $where ][ $handle ] = getcwd() . $wp_scripts->registered[$handle]->src;
+			$this->scripts[ $where ][ $handle ] = getcwd() . str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
 
 			//Remove scripts from the queue so this plugin will be
 			//responsible to include all the scripts.
@@ -65,7 +66,13 @@ class Init {
 
 	public function headerScripts() {
 		file_put_contents( $this->assetsPath . "head.js", $this->factory->createAsset( $this->scripts['header'] )->dump() );
-		echo "<script type='text/javascript' src='" . $this->assetsPath . "head.js'></script>";
+		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/head.js'></script>";
+		return true;
+	}
+
+	public function footerScripts() {
+		file_put_contents( $this->assetsPath . "foot.js", $this->factory->createAsset( $this->scripts['footer'] )->dump() );
+		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/foot.js'></script>";
 		return true;
 	}
 
