@@ -20,9 +20,9 @@ class Init {
 
 	protected $assetsPath, $assetsUrl;
 	protected $jsFilters = array();
-	protected $scripts = array( 'header' => array(), 'footer' => array() );
-	protected $mTimes = array( 'header' => array(), 'footer' => array() );
-	protected $jsMin = 'JSMin';
+	protected $scripts   = array( 'header' => array(), 'footer' => array() );
+	protected $mTimes    = array( 'header' => array(), 'footer' => array() );
+	protected $jsMin     = 'JSMin';
 
 	public function __construct() {
 
@@ -40,7 +40,6 @@ class Init {
 		$this->assetsPath = plugin_dir_path( __FILE__ ) . 'assets/';
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
-
 
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
@@ -74,7 +73,6 @@ class Init {
 			$wp_scripts->dequeue( $handle );
 
 		}
-		return true;
 	}
 
 	public function headerScripts() {
@@ -112,7 +110,7 @@ class Init {
 	}
 
 	protected function dumpJs( $filename ) {
-		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename ."'></script>";
+		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename . "'></script>";
 	}
 }
 
