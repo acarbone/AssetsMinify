@@ -9,6 +9,7 @@ use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
+use Assetic\Cache\FilesystemCache;
 
 /**
  * Class that holds plugin's logic.
@@ -20,6 +21,7 @@ class Init {
 	protected $assetsPath, $assetsUrl;
 	protected $jsFilters = array();
 	protected $scripts = array( 'header' => array(), 'footer' => array() );
+	protected $mTimes = array( 'header' => array(), 'footer' => array() );
 	protected $jsMin = 'JSMin';
 
 	public function __construct() {
@@ -38,6 +40,9 @@ class Init {
 		$this->assetsPath = plugin_dir_path( __FILE__ ) . 'assets/';
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
+
+
+		$this->cache = new FilesystemCache( $this->assetsPath );
 
 		//Detect all js added to wordpress and deny their inclusion
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
@@ -62,6 +67,8 @@ class Init {
 			//Save the source filename for every script enqueued.
 			$this->scripts[ $where ][ $handle ] = getcwd() . str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
 
+			$this->mTimes[ $where ][ $handle ] = filemtime( $this->scripts[ $where ][ $handle ] );
+
 			//Remove scripts from the queue so this plugin will be
 			//responsible to include all the scripts.
 			$wp_scripts->dequeue( $handle );
@@ -74,8 +81,14 @@ class Init {
 		if ( empty($this->scripts['header']) )
 			return false;
 
-		//Save the asseticized header scripts
-		file_put_contents( $this->assetsPath . "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+		$mtime = md5(implode('&', $this->mTimes['header']));
+
+		if ( !$this->cache->has( "head.js" ) || get_option('as_minify_head_mtime') != $mtime ) {
+			update_option( 'as_minify_head_mtime', $mtime );
+
+			//Save the asseticized header scripts
+			$this->cache->set( "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+		}
 
 		//Print <script> inclusion in the page
 		$this->dumpJs( 'head.js' );
@@ -85,8 +98,14 @@ class Init {
 		if ( empty($this->scripts['footer']) )
 			return false;
 
-		//Save the asseticized footer scripts
-		file_put_contents( $this->assetsPath . "foot.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
+		$mtime = md5(implode('&', $this->mTimes['footer']));
+
+		if ( !$this->cache->has( "foot.js" ) || get_option('as_minify_foot_mtime') != $mtime ) {
+			update_option( 'as_minify_foot_mtime', $mtime );
+
+			//Save the asseticized footer scripts
+			$this->cache->set( "foot.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
+		}
 
 		//Print <script> inclusion in the page
 		$this->dumpJs( 'foot.js' );
@@ -97,4 +116,4 @@ class Init {
 	}
 }
 
-new Init();
+new Init;
