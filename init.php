@@ -11,6 +11,7 @@ use Assetic\Asset\GlobAsset;
 use Assetic\FilterManager;
 use Assetic\AssetManager;
 use Assetic\Factory\AssetFactory;
+use Assetic\Filter\JSMinFilter;
 
 /**
  * Class that holds plugin's logic.
@@ -19,7 +20,7 @@ class Init {
 
 	public $factory;
 	protected $assetsPath;
-	protected $styles = array(),
+	protected $styles = array(), $filters = array(),
 		$scripts = array(
 			'header' => array(),
 			'footer' => array(),
@@ -30,6 +31,8 @@ class Init {
 		$this->factory = new AssetFactory( getcwd() );
 		$this->factory->setAssetManager(new AssetManager);
 		$this->factory->setFilterManager(new FilterManager);
+		$this->factory->getFilterManager()->set('JSMin', new JSMinFilter);
+		$this->filters []= 'JSMin';
 		$this->assetsPath = AS_MINIFY_PATH . 'assets/';
 
 		if ( !is_dir($this->assetsPath) )
@@ -65,13 +68,13 @@ class Init {
 	}
 
 	public function headerScripts() {
-		file_put_contents( $this->assetsPath . "head.js", $this->factory->createAsset( $this->scripts['header'] )->dump() );
+		file_put_contents( $this->assetsPath . "head.js", $this->factory->createAsset( $this->scripts['header'], $this->filters )->dump() );
 		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/head.js'></script>";
 		return true;
 	}
 
 	public function footerScripts() {
-		file_put_contents( $this->assetsPath . "foot.js", $this->factory->createAsset( $this->scripts['footer'] )->dump() );
+		file_put_contents( $this->assetsPath . "foot.js", $this->factory->createAsset( $this->scripts['footer'], $this->filters )->dump() );
 		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/foot.js'></script>";
 		return true;
 	}
