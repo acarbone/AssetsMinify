@@ -5,12 +5,9 @@
 
 namespace AssetsMinify;
 
-use Assetic\Asset\AssetCollection;
-use Assetic\Asset\FileAsset;
-use Assetic\Asset\GlobAsset;
-use Assetic\FilterManager;
-use Assetic\AssetManager;
 use Assetic\Factory\AssetFactory;
+use Assetic\AssetManager;
+use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
 
 /**
@@ -18,31 +15,37 @@ use Assetic\Filter\JSMinFilter;
  */
 class Init {
 
-	public $factory;
-	protected $assetsPath;
-	protected $styles = array(), $filters = array(),
-		$scripts = array(
-			'header' => array(),
-			'footer' => array(),
-		);
+	public $js;
+
+	protected $assetsPath, $assetsUrl;
+	protected $jsFilters = array();
+	protected $scripts = array( 'header' => array(), 'footer' => array() );
+	protected $jsMin = 'JSMin';
 
 	public function __construct() {
 
-		$this->factory = new AssetFactory( getcwd() );
-		$this->factory->setAssetManager(new AssetManager);
-		$this->factory->setFilterManager(new FilterManager);
-		$this->factory->getFilterManager()->set('JSMin', new JSMinFilter);
-		$this->filters []= 'JSMin';
-		$this->assetsPath = AS_MINIFY_PATH . 'assets/';
+		//Init assetic's object to manage js minify
+		$this->js = new AssetFactory( getcwd() );
+		$this->js->setAssetManager( new AssetManager );
+		$this->js->setFilterManager( new FilterManager );
 
+		//Define filter for js minify
+		$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
+		$this->jsFilters []= $this->jsMin;
+
+		//Define assets path to save asseticized files
+		$this->assetsUrl  = plugin_dir_url( __FILE__ )  . 'assets/';
+		$this->assetsPath = plugin_dir_path( __FILE__ ) . 'assets/';
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
 
+		//Detect all js added to wordpress and deny their inclusion
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
+
+		//Inclusion of scripts in <head> and before </body>
 		add_action( 'wp_head', array( $this, 'headerScripts' ) );
 		add_action( 'wp_footer', array( $this, 'footerScripts' ) );
 
-		$this->css = $this->enqueueStyles();
 	}
 
 	public function extractScripts() {
@@ -68,20 +71,29 @@ class Init {
 	}
 
 	public function headerScripts() {
-		file_put_contents( $this->assetsPath . "head.js", $this->factory->createAsset( $this->scripts['header'], $this->filters )->dump() );
-		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/head.js'></script>";
-		return true;
+		if ( empty($this->scripts['header']) )
+			return false;
+
+		//Save the asseticized header scripts
+		file_put_contents( $this->assetsPath . "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+
+		//Print <script> inclusion in the page
+		$this->dumpJs( 'head.js' );
 	}
 
 	public function footerScripts() {
-		file_put_contents( $this->assetsPath . "foot.js", $this->factory->createAsset( $this->scripts['footer'], $this->filters )->dump() );
-		echo "<script type='text/javascript' src='" . AS_MINIFY_URL . "assets/foot.js'></script>";
-		return true;
+		if ( empty($this->scripts['footer']) )
+			return false;
+
+		//Save the asseticized footer scripts
+		file_put_contents( $this->assetsPath . "foot.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
+
+		//Print <script> inclusion in the page
+		$this->dumpJs( 'foot.js' );
 	}
 
-	public function enqueueStyles() {
-
-		return true;
+	protected function dumpJs( $filename ) {
+		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename ."'></script>";
 	}
 }
 
