@@ -9,6 +9,7 @@ use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
+use Assetic\Filter\CssMinFilter;
 use Assetic\Cache\FilesystemCache;
 
 /**
@@ -23,7 +24,7 @@ class Init {
 	protected $styles    = array(), $mTimesStyles = array();
 	protected $scripts   = array( 'header' => array(), 'footer' => array() );
 	protected $mTimes    = array( 'header' => array(), 'footer' => array() );
-	protected $jsMin     = 'JSMin';
+	protected $jsMin     = 'JSMin', $cssMin = 'CssMin';
 
 	public function __construct() {
 
@@ -38,8 +39,8 @@ class Init {
 		//Define filter for js minify
 		$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
 		$this->jsFilters []= $this->jsMin;
-		/*$this->css->getFilterManager()->set($this->jsMin, new JSMinFilter);
-		$this->cssFilters []= $this->jsMin;*/
+		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
+		$this->cssFilters []= $this->cssMin;
 
 		//Define assets path to save asseticized files
 		$uploadsDir = wp_upload_dir();
