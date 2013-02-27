@@ -18,13 +18,22 @@ use Assetic\Cache\FilesystemCache;
 class Init {
 
 	public $js;
+	public $css;
 
-	protected $assetsPath, $assetsUrl;
-	protected $jsFilters = array(), $cssFilters = array();
-	protected $styles    = array(), $mTimesStyles = array();
-	protected $scripts   = array( 'header' => array(), 'footer' => array() );
-	protected $mTimes    = array( 'header' => array(), 'footer' => array() );
-	protected $jsMin     = 'JSMin', $cssMin = 'CssMin';
+	protected $assetsPath;
+	protected $assetsUrl;
+
+	protected $jsFilters    = array();
+	protected $cssFilters   = array();
+
+	protected $styles       = array();
+	protected $mTimesStyles = array();
+
+	protected $scripts      = array( 'header' => array(), 'footer' => array() );
+	protected $mTimes       = array( 'header' => array(), 'footer' => array() );
+
+	protected $jsMin        = 'JSMin';
+	protected $cssMin       = 'CssMin';
 
 	public function __construct() {
 
@@ -115,10 +124,10 @@ class Init {
 
 	public function headerServe() {
 
-		//Manages the scripts tobe printed in the header
+		//Manage the scripts tobe printed in the header
 		$this->headerServeScripts();
 
-		//Manages the stylesheets
+		//Manage the stylesheets
 		if ( empty($this->styles) )
 			return false;
 
