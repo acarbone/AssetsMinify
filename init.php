@@ -32,6 +32,8 @@ class Init {
 		$this->js = new AssetFactory( getcwd() );
 		$this->js->setAssetManager( new AssetManager );
 		$this->js->setFilterManager( new FilterManager );
+
+		//Init assetic's object to manage css minify
 		$this->css = new AssetFactory( getcwd() );
 		$this->css->setAssetManager( new AssetManager );
 		$this->css->setFilterManager( new FilterManager );
@@ -39,6 +41,8 @@ class Init {
 		//Define filter for js minify
 		$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
 		$this->jsFilters []= $this->jsMin;
+
+		//Define filter for css minify
 		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
 		$this->cssFilters []= $this->cssMin;
 
@@ -51,13 +55,13 @@ class Init {
 
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
-		//Detect all js added to wordpress and deny their inclusion
-		add_action( 'wp_print_styles', array( $this, 'extractStyles' ) );
+		//Detect all js and css added to wordpress and deny their inclusion
+		add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 
 		//Inclusion of scripts in <head> and before </body>
-		add_action( 'wp_head', array( $this, 'headerScripts' ) );
-		add_action( 'wp_footer', array( $this, 'footerScripts' ) );
+		add_action( 'wp_head',   array( $this, 'headerServe' ) );
+		add_action( 'wp_footer', array( $this, 'footerServe' ) );
 
 	}
 
@@ -67,74 +71,89 @@ class Init {
 		foreach( $wp_scripts->queue as $handle ) {
 
 			$where = 'footer';
-			//Unfortunately not every WP plugin developer is a JS ninja.
+			//Unfortunately not every WP plugin developer is a JS ninja
 			//So... let's put it in the header.
 			if ( empty($wp_scripts->registered[$handle]->extra) )
 				$where = 'header';
 
-			//Save the source filename for every script enqueued.
+			//Save the source filename for every script enqueued
 			$this->scripts[ $where ][ $handle ] = getcwd() . str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
 
 			$this->mTimes[ $where ][ $handle ] = filemtime( $this->scripts[ $where ][ $handle ] );
 
 			//Remove scripts from the queue so this plugin will be
-			//responsible to include all the scripts.
+			//responsible to include all the scripts
 			$wp_scripts->dequeue( $handle );
 
 		}
+
 	}
 
 	public function extractStyles() {
 		global $wp_styles;
+
 		foreach( $wp_styles->queue as $handle ) {
 
+			//Remove absolute part of the path if it's specified in the src
 			$style = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_styles->registered[$handle]->src );
 
+			//Don't manage other domains included stylesheets
 			if ( strpos($style, "http") === 0 )
 				continue;
 
-			//Save the source filename for every script enqueued.
+			//Save the source filename for every css enqueued
 			$this->styles[ $handle ] = getcwd() . $style;
 
 			$this->mTimesStyles[ $handle ] = filemtime( $this->styles[ $handle ] );
 
-			//Remove scripts from the queue so this plugin will be
-			//responsible to include all the scripts.
+			//Remove css from the queue so this plugin will be
+			//responsible to include all the stylesheets except other domains ones.
 			$wp_styles->dequeue( $handle );
 
 		}
 	}
 
-	public function headerScripts() {
-		if ( !empty($this->scripts['header']) ) {
-			$mtime = md5(implode('&', $this->mTimes['header']));
+	public function headerServe() {
 
-			if ( !$this->cache->has( "head.js" ) || get_option('as_minify_head_mtime') != $mtime ) {
-				update_option( 'as_minify_head_mtime', $mtime );
+		//Manages the scripts tobe printed in the header
+		$this->headerServeScripts();
 
-				//Save the asseticized header scripts
-				$this->cache->set( "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
-			}
+		//Manages the stylesheets
+		if ( empty($this->styles) )
+			return false;
 
-			//Print <script> inclusion in the page
-			$this->dumpJs( 'head.js' );
+		$mtime = md5(implode('&', $this->mTimesStyles));
+
+		if ( !$this->cache->has( "head.css" ) || get_option('as_minify_head_css_mtime') != $mtime ) {
+			update_option( 'as_minify_head_css_mtime', $mtime );
+
+			//Save the asseticized stylesheets
+			$this->cache->set( "head.css", $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
 		}
-		if ( !empty($this->styles) ) {
-			$mtime = md5(implode('&', $this->mTimesStyles));
 
-			if ( !$this->cache->has( "head.css" ) || get_option('as_minify_head_css_mtime') != $mtime ) {
-				update_option( 'as_minify_head_css_mtime', $mtime );
+		//Print css inclusion in the page
+		$this->dumpCss( 'head.css' );
 
-				//Save the asseticized header scripts
-				$this->cache->set( "head.css", $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
-			}
-
-			//Print <script> inclusion in the page
-			$this->dumpCss( 'head.css' );
-		}
 	}
 
-	public function footerScripts() {
+	public function headerServeScripts() {
+		if ( empty($this->scripts['header']) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimes['header']));
+
+		if ( !$this->cache->has( "head.js" ) || get_option('as_minify_head_mtime') != $mtime ) {
+			update_option( 'as_minify_head_mtime', $mtime );
+
+			//Save the asseticized header scripts
+			$this->cache->set( "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+		}
+
+		//Print <script> inclusion in the page
+		$this->dumpJs( 'head.js' );
+	}
+
+	public function footerServe() {
 		if ( empty($this->scripts['footer']) )
 			return false;
 
