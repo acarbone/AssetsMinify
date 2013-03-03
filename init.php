@@ -114,6 +114,7 @@ class Init {
 			if ( strpos($style, "http") === 0 )
 				continue;
 
+			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
 				$this->sass[ $handle ] = getcwd() . $style;
@@ -162,9 +163,11 @@ class Init {
 
 		$mtime = md5(implode('&', $this->mTimesSass));
 
+		//If sass stylesheets have been updated -> compass compile
 		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
 			update_option( 'as_minify_head_sass_mtime', $mtime );
 
+			//Define compass filter instance and sprite images paths
 			$compassInstance = new CompassFilter;
 			$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
 			$compassInstance->setGeneratedImagesPath( $this->assetsPath );
@@ -175,6 +178,7 @@ class Init {
 			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Compass' ) )->dump() );
 		}
 
+		//Add sass compiled stylesheet to normal css queue
 		$this->styles['sass-am-generated'] = $this->assetsPath . "sass.css";
 		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
 
