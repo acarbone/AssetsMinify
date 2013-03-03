@@ -167,6 +167,8 @@ class Init {
 
 			$compassInstance = new CompassFilter;
 			$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
+			$compassInstance->setGeneratedImagesPath( $this->assetsPath );
+			$compassInstance->setHttpGeneratedImagesPath( str_replace( getcwd(), '', $this->assetsPath ) );
 			$this->css->getFilterManager()->set('Compass', $compassInstance);
 
 			//Save the asseticized stylesheets
