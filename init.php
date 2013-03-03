@@ -11,6 +11,7 @@ use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
 use Assetic\Filter\CssMinFilter;
 use Assetic\Filter\CompassFilter;
+use Assetic\Filter\LessphpFilter;
 use Assetic\Cache\FilesystemCache;
 
 /**
@@ -32,6 +33,9 @@ class Init {
 
 	protected $sass         = array();
 	protected $mTimesSass   = array();
+
+	protected $less         = array();
+	protected $mTimesLess   = array();
 
 	protected $scripts      = array( 'header' => array(), 'footer' => array() );
 	protected $mTimes       = array( 'header' => array(), 'footer' => array() );
@@ -126,6 +130,9 @@ class Init {
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
 				$this->sass[ $handle ] = getcwd() . $style;
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
+			} elseif ( $ext == '.less' ) {
+				$this->less[ $handle ] = getcwd() . $style;
+				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
 				$this->styles[ $handle ] = getcwd() . $style;
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
@@ -145,6 +152,9 @@ class Init {
 
 		//Compile sass stylesheets
 		$this->generateSass();
+
+		//Compile less stylesheets
+		$this->generateLess();
 
 		//Manage the stylesheets
 		if ( empty($this->styles) )
@@ -188,6 +198,29 @@ class Init {
 		//Add sass compiled stylesheet to normal css queue
 		$this->styles['sass-am-generated'] = $this->assetsPath . "sass.css";
 		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
+
+	}
+
+	public function generateLess() {
+		if ( empty($this->less) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimesLess));
+
+		//If sass stylesheets have been updated -> compass compile
+		if ( !$this->cache->has( "less.css" ) || get_option('as_minify_head_less_mtime') != $mtime ) {
+			update_option( 'as_minify_head_less_mtime', $mtime );
+
+			//Define compass filter instance and sprite images paths
+			$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
+
+			//Save the asseticized stylesheets
+			$this->cache->set( "less.css", $this->css->createAsset( $this->less, array( 'Lessphp' ) )->dump() );
+		}
+
+		//Add sass compiled stylesheet to normal css queue
+		$this->styles['less-am-generated'] = $this->assetsPath . "less.css";
+		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
 
 	}
 
