@@ -57,7 +57,6 @@ class Init {
 
 		//Define filter for css minify
 		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
-		$this->css->getFilterManager()->set('Compass', new CompassFilter);
 		$this->cssFilters []= $this->cssMin;
 
 		//Define assets path to save asseticized files
@@ -118,10 +117,10 @@ class Init {
 			$ext = substr( $style, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
 				$this->sass[ $handle ] = getcwd() . $style;
-				$this->mTimesSass[ $handle ] = filemtime( $this->styles[ $handle ] );
+				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} else {
 				$this->styles[ $handle ] = getcwd() . $style;
-				$this->mTimesStyles[ $handle ] = filemtime( $this->styles[ $handle ] );
+				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
 
 			//Remove css from the queue so this plugin will be
@@ -166,10 +165,16 @@ class Init {
 		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
 			update_option( 'as_minify_head_sass_mtime', $mtime );
 
+			$compassInstance = new CompassFilter;
+			$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
+			$this->css->getFilterManager()->set('Compass', $compassInstance);
+
 			//Save the asseticized stylesheets
 			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Compass' ) )->dump() );
-			$this->styles[ 'sass-am-generated' ] = $this->assetsPath . "sass.css";
 		}
+
+		$this->styles['sass-am-generated'] = $this->assetsPath . "sass.css";
+		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
 
 	}
 
