@@ -207,7 +207,7 @@ class Init {
 
 		$mtime = md5(implode('&', $this->mTimesLess));
 
-		//If sass stylesheets have been updated -> compass compile
+		//If less stylesheets have been updated compile them
 		if ( !$this->cache->has( "less.css" ) || get_option('as_minify_head_less_mtime') != $mtime ) {
 			update_option( 'as_minify_head_less_mtime', $mtime );
 
@@ -218,7 +218,7 @@ class Init {
 			$this->cache->set( "less.css", $this->css->createAsset( $this->less, array( 'Lessphp' ) )->dump() );
 		}
 
-		//Add sass compiled stylesheet to normal css queue
+		//Add less compiled stylesheet to normal css queue
 		$this->styles['less-am-generated'] = $this->assetsPath . "less.css";
 		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
 
