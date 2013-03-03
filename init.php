@@ -83,6 +83,13 @@ class Init {
 
 		foreach( $wp_scripts->queue as $handle ) {
 
+			//Remove absolute part of the path if it's specified in the src
+			$script = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
+
+			//Don't manage other domains included scripts
+			if ( strpos($script, "http") === 0 || strpos($script, "//") === 0 )
+				continue;
+
 			$where = 'footer';
 			//Unfortunately not every WP plugin developer is a JS ninja
 			//So... let's put it in the header.
@@ -90,7 +97,7 @@ class Init {
 				$where = 'header';
 
 			//Save the source filename for every script enqueued
-			$this->scripts[ $where ][ $handle ] = getcwd() . str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
+			$this->scripts[ $where ][ $handle ] = getcwd() . $script;
 
 			$this->mTimes[ $where ][ $handle ] = filemtime( $this->scripts[ $where ][ $handle ] );
 
@@ -111,7 +118,7 @@ class Init {
 			$style = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_styles->registered[$handle]->src );
 
 			//Don't manage other domains included stylesheets
-			if ( strpos($style, "http") === 0 )
+			if ( strpos($style, "http") === 0 || strpos($style, "//") === 0 )
 				continue;
 
 			//Separation between css-frameworks stylesheets and .css stylesheets
