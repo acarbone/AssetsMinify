@@ -10,6 +10,7 @@ use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
 use Assetic\Filter\CssMinFilter;
+use Assetic\Filter\CompassFilter;
 use Assetic\Cache\FilesystemCache;
 
 /**
@@ -28,6 +29,9 @@ class Init {
 
 	protected $styles       = array();
 	protected $mTimesStyles = array();
+
+	protected $sass         = array();
+	protected $mTimesSass   = array();
 
 	protected $scripts      = array( 'header' => array(), 'footer' => array() );
 	protected $mTimes       = array( 'header' => array(), 'footer' => array() );
@@ -53,6 +57,7 @@ class Init {
 
 		//Define filter for css minify
 		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
+		$this->css->getFilterManager()->set('Compass', new CompassFilter);
 		$this->cssFilters []= $this->cssMin;
 
 		//Define assets path to save asseticized files
@@ -110,10 +115,14 @@ class Init {
 			if ( strpos($style, "http") === 0 )
 				continue;
 
-			//Save the source filename for every css enqueued
-			$this->styles[ $handle ] = getcwd() . $style;
-
-			$this->mTimesStyles[ $handle ] = filemtime( $this->styles[ $handle ] );
+			$ext = substr( $style, -5 );
+			if ( in_array( $ext, array('.sass', '.scss') ) ) {
+				$this->sass[ $handle ] = getcwd() . $style;
+				$this->mTimesSass[ $handle ] = filemtime( $this->styles[ $handle ] );
+			} else {
+				$this->styles[ $handle ] = getcwd() . $style;
+				$this->mTimesStyles[ $handle ] = filemtime( $this->styles[ $handle ] );
+			}
 
 			//Remove css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
@@ -124,8 +133,11 @@ class Init {
 
 	public function headerServe() {
 
-		//Manage the scripts tobe printed in the header
+		//Manage the scripts to be printed in the header
 		$this->headerServeScripts();
+
+		//Compile sass stylesheets
+		$this->generateSass();
 
 		//Manage the stylesheets
 		if ( empty($this->styles) )
@@ -142,6 +154,22 @@ class Init {
 
 		//Print css inclusion in the page
 		$this->dumpCss( 'head.css' );
+
+	}
+
+	public function generateSass() {
+		if ( empty($this->sass) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimesSass));
+
+		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
+			update_option( 'as_minify_head_sass_mtime', $mtime );
+
+			//Save the asseticized stylesheets
+			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Compass' ) )->dump() );
+			$this->styles[ 'sass-am-generated' ] = $this->assetsPath . "sass.css";
+		}
 
 	}
 
