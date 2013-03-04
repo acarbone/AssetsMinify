@@ -9,6 +9,7 @@
 class AssetsMinifyAdmin {
 
 	public function __construct() {
+		add_action('admin_init', array( $this, 'options') );
 		add_action('admin_menu', array( $this, 'menu') );
 	}
 
@@ -21,6 +22,11 @@ class AssetsMinifyAdmin {
 
 	protected function tpl( $tplFile ) {
 		include plugin_dir_path( __FILE__ ) . 'templates/' . $tplFile;
+	}
+
+	public function options() {
+		register_setting('am_options_group', 'am_use_compass');
+		register_setting('am_options_group', 'am_compass_path');
 	}
 
 	/**

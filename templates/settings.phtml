@@ -3,6 +3,7 @@
     <h2>AssetsMinify's configuration</h2>
     <p>&nbsp;</p>
     <form method="post" action="options.php">
+        <?php settings_fields('am_options_group'); ?>
         <table class="form-table">
             <tbody>
                 <tr valign="top">
@@ -10,7 +11,7 @@
                         <label for="am_use_compass">Use Compass</label>
                     </th>
                     <td>
-                        <input name="am_use_compass" type="checkbox" id="am_use_compass" value="1">
+                        <input name="am_use_compass" type="checkbox" id="am_use_compass" value="1"<?php if ( get_option('am_use_compass', 0) != 0 ): ?> checked="checked"<?php endif ?>>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -18,7 +19,7 @@
                         <label for="am_compass_path">Compass compiler's path</label>
                     </th>
                     <td>
-                        <input name="am_compass_path" type="text" id="am_compass_path" value="" class="regular-text">
+                        <input name="am_compass_path" type="text" id="am_compass_path" value="<?php echo get_option('am_compass_path', '/usr/bin/compass') ?>" class="regular-text">
                     </td>
                 </tr>
             </tbody>
