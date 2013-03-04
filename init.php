@@ -10,6 +10,7 @@ use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
 use Assetic\Filter\CssMinFilter;
+use Assetic\Filter\ScssphpFilter;
 use Assetic\Filter\CompassFilter;
 use Assetic\Filter\LessphpFilter;
 use Assetic\Cache\FilesystemCache;
@@ -185,14 +186,15 @@ class Init {
 			update_option( 'as_minify_head_sass_mtime', $mtime );
 
 			//Define compass filter instance and sprite images paths
-			$compassInstance = new CompassFilter;
+			/*$compassInstance = new CompassFilter;
 			$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
 			$compassInstance->setGeneratedImagesPath( $this->assetsPath );
 			$compassInstance->setHttpGeneratedImagesPath( str_replace( getcwd(), '', $this->assetsPath ) );
-			$this->css->getFilterManager()->set('Compass', $compassInstance);
+			$this->css->getFilterManager()->set('Compass', $compassInstance);*/
 
+			$this->css->getFilterManager()->set('Scssphp', new ScssphpFilter);
 			//Save the asseticized stylesheets
-			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Compass' ) )->dump() );
+			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Scssphp' ) )->dump() );
 		}
 
 		//Add sass compiled stylesheet to normal css queue
