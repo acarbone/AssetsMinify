@@ -183,16 +183,21 @@ class AssetsMinifyInit {
 		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
 			update_option( 'as_minify_head_sass_mtime', $mtime );
 
-			//Define compass filter instance and sprite images paths
-			/*$compassInstance = new CompassFilter;
-			$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
-			$compassInstance->setGeneratedImagesPath( $this->assetsPath );
-			$compassInstance->setHttpGeneratedImagesPath( str_replace( getcwd(), '', $this->assetsPath ) );
-			$this->css->getFilterManager()->set('Compass', $compassInstance);*/
+			if ( get_option('am_use_compass', 0) != 0) {
+				//Define compass filter instance and sprite images paths
+				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
+				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
+				$compassInstance->setGeneratedImagesPath( $this->assetsPath );
+				$compassInstance->setHttpGeneratedImagesPath( str_replace( getcwd(), '', $this->assetsPath ) );
+				$this->css->getFilterManager()->set('Compass', $compassInstance);
+				$filter = 'Compass';
+			} else {
+				$this->css->getFilterManager()->set('Scssphp', new ScssphpFilter);
+				$filter = 'Scssphp';
+			}
 
-			$this->css->getFilterManager()->set('Scssphp', new ScssphpFilter);
 			//Save the asseticized stylesheets
-			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( 'Scssphp' ) )->dump() );
+			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( $filter ) )->dump() );
 		}
 
 		//Add sass compiled stylesheet to normal css queue
