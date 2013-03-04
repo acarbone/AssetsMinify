@@ -18,4 +18,6 @@ spl_autoload_register(function( $classname ) {
 
 //Start
 if ( !is_admin() )
-	require_once 'init.php';
+	require_once 'AssetsMinifyInit.php';
+else
+	require_once 'AssetsMinifyAdmin.php';

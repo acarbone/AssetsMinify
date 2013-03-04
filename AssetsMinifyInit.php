@@ -3,8 +3,6 @@
  * @package Assets Minify
  */
 
-namespace AssetsMinify;
-
 use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
 use Assetic\FilterManager;
@@ -18,7 +16,7 @@ use Assetic\Cache\FilesystemCache;
 /**
  * Class that holds plugin's logic.
  */
-class Init {
+class AssetsMinifyInit {
 
 	public $js;
 	public $css;
@@ -269,4 +267,4 @@ class Init {
 	}
 }
 
-new Init;
+new AssetsMinifyInit;
