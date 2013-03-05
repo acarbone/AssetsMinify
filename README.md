@@ -26,7 +26,7 @@ wp_enqueue_style( 'screen',  get_template_directory_uri() . '/css/screen.css' );
 wp_enqueue_style( 'home',    get_template_directory_uri() . '/sass/home.scss' );
 wp_enqueue_style( 'content', get_template_directory_uri() . '/less/content.less' );
 ```
-As you can see I have included three different type of stylesheets: css / scss / less.
+As you can see I have included three different type of stylesheets: css / scss / less. <br>
 This will work! AssetsMinify will compile 'em all and will combine them in a single css file.
 
 ``` php
@@ -36,11 +36,15 @@ wp_enqueue_script( 'script2', get_template_directory_uri() . '/js/script2.js', a
 wp_enqueue_script( 'script3', get_template_directory_uri() . '/js/script3.js', array(), '1.0', true );
 wp_enqueue_script( 'script4', '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', array(), '1.0', true );
 ```
-AssetsMinify detects which are the scripts the would go within the `<head>` ( in the previous sample only script1 ) and which would go before `</body>` ( script2 and script3 ).
+AssetsMinify detects which are the scripts that would go within the `<head>` ( in the previous sample only script1 ) and which would go before `</body>` ( script2 and script3 ).
 External scripts are not managed by AssetsMinify (so script4 in the sample will be included with a separate `<script>` ).
 
 
 Configuration
 -------------
 
-Using AssetsMinify is absolutely simple because you have only to install it as every normal WP plugin
+AssetsMinify configuration steps are extremely simple.
+
+1.  Set write permission to [uploads directory](http://codex.wordpress.org/Function_Reference/wp_upload_dir). In most cases: chmod 777 wp-content/uploads/
+2.  In the admin panel ( Settings > AssetsMinify ) you can choose whether to use Compass to compile sass files or not flaggin "Use Compass" field.
+3.  If you check the flag "Use Compass" you can also specify the Compass compiler's path ( default is /usr/bin/compass ).
