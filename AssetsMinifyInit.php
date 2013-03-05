@@ -183,7 +183,7 @@ class AssetsMinifyInit {
 		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
 			update_option( 'as_minify_head_sass_mtime', $mtime );
 
-			if ( get_option('am_use_compass', 0) != 0) {
+			if ( get_option('am_use_compass', 0) != 0 ) {
 				//Define compass filter instance and sprite images paths
 				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
 				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
