@@ -9,7 +9,9 @@ Why to use it
 How many times have you wished to minify in a clean way all the stylesheets and scripts of a WordPress website?<br>
 WordPress offers the way to include JS specifying where to import the script ( within `<head>` or before `</body>` ). It's good practice include JS before `</body>` for better performances, but not every WordPress plugin's developer is prone to do so.
 
+AssetsMinify takes every CSS and JS asset included using *wp_enqueue_style()* and `wp_enqueue_script()` and merges+minifies them.
 
+You can also use AssetsMinify to create your WP theme using Compass / sass / less without configuring any config.rb or that kind of stuff.
 
 How to use it
 -------------
