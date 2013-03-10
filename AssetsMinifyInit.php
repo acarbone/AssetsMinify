@@ -171,7 +171,7 @@ class AssetsMinifyInit {
 
 			//Save the asseticized stylesheets
 			$dumped = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
-			$this->cache->set( "head.css", str_replace('../wp-content', '/wp-content', $dumped ) );
+			$this->cache->set( "head.css", str_replace('../', '/', $dumped ) );
 		}
 
 		//Print css inclusion in the page
