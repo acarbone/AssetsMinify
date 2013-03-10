@@ -8,6 +8,7 @@ use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
 use Assetic\Filter\CssMinFilter;
+use Assetic\Filter\CssRewriteFilter;
 use Assetic\Filter\ScssphpFilter;
 use Assetic\Filter\CompassFilter;
 use Assetic\Filter\LessphpFilter;
@@ -60,6 +61,7 @@ class AssetsMinifyInit {
 
 		//Define filter for css minify
 		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
+		$this->css->getFilterManager()->set('CssRewrite', new CssRewriteFilter);
 		$this->cssFilters []= $this->cssMin;
 
 		//Define assets path to save asseticized files
@@ -149,6 +151,9 @@ class AssetsMinifyInit {
 		//Manage the scripts to be printed in the header
 		$this->headerServeScripts();
 
+		//Compile css stylesheets
+		$this->generateCss();
+
 		//Compile sass stylesheets
 		$this->generateSass();
 
@@ -165,7 +170,8 @@ class AssetsMinifyInit {
 			update_option( 'as_minify_head_css_mtime', $mtime );
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "head.css", $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
+			$dumped = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
+			$this->cache->set( "head.css", str_replace('../wp-content', '/wp-content', $dumped ) );
 		}
 
 		//Print css inclusion in the page
@@ -197,7 +203,7 @@ class AssetsMinifyInit {
 			}
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( $filter ) )->dump() );
+			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( $filter, 'CssRewrite' ) )->dump() );
 		}
 
 		//Add sass compiled stylesheet to normal css queue
@@ -220,12 +226,32 @@ class AssetsMinifyInit {
 			$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "less.css", $this->css->createAsset( $this->less, array( 'Lessphp' ) )->dump() );
+			$this->cache->set( "less.css", $this->css->createAsset( $this->less, array( 'Lessphp', 'CssRewrite' ) )->dump() );
 		}
 
 		//Add less compiled stylesheet to normal css queue
 		$this->styles['less-am-generated'] = $this->assetsPath . "less.css";
 		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
+
+	}
+
+	public function generateCss() {
+		if ( empty($this->styles) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimesStyles));
+
+		//If less stylesheets have been updated compile them
+		if ( !$this->cache->has( "styles.css" ) || get_option('as_minify_head_styles_mtime') != $mtime ) {
+			update_option( 'as_minify_head_styles_mtime', $mtime );
+
+			//Save the asseticized stylesheets
+			$this->cache->set( "styles.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
+		}
+
+		//Add less compiled stylesheet to normal css queue
+		$this->styles = array( 'styles-am-generated' => $this->assetsPath . "styles.css");
+		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['less-am-generated']) );
 
 	}
 
