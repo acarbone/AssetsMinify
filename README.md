@@ -48,15 +48,3 @@ AssetsMinify configuration steps are extremely simple.
 1.  Set write permission to [uploads directory](http://codex.wordpress.org/Function_Reference/wp_upload_dir). In most cases: chmod 777 wp-content/uploads/
 2.  In the admin panel ( Settings > AssetsMinify ) you can choose whether to use Compass to compile sass files or not flagging "Use Compass" field.
 3.  If you check the flag "Use Compass" you can also specify the Compass compiler's path ( default is /usr/bin/compass ).
-
-Did you like my plugin?
--------------
-
-If you enjoyed my plugin you could offer me a beer!
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="FBXNQXD9X3GZY">
-<input type="image" src="https://www.paypalobjects.com/it_IT/IT/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - Il metodo rapido, affidabile e innovativo per pagare e farsi pagare.">
-<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
-</form>
-
