@@ -18,7 +18,7 @@ AssetsMinify takes every CSS and JS asset included using `wp_enqueue_style()` an
 
 You can also use AssetsMinify to create your WP theme using Compass / sass / less without configuring any `config.rb` or *that kind of stuff*.
 
-[Fork me on Github](https://github.com/acarbone/AssetsMinify "AssetsMinify on Github")
+[Fork me on Github](https://github.com/acarbone/AssetsMinify).
 
 == Installation ==
 
