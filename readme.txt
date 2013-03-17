@@ -14,8 +14,6 @@ AssetsMinify is a WordPress plugin based on Assetic library to minify JS and CSS
 
 How many times have you wished to minify in a clean way all the stylesheets and scripts of a WordPress website?
 
-WordPress offers the way to include JS specifying where to import the script ( within *head tag* or before *body closing tag* ).
-
 AssetsMinify takes every CSS and JS asset included using `wp_enqueue_style()` and `wp_enqueue_script()` and Merges+Minifies them.
 
 You can also use AssetsMinify to create your WP theme using Compass / sass / less without configuring any `config.rb` or *that kind of stuff*.
