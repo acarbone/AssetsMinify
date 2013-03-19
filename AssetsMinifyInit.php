@@ -148,9 +148,6 @@ class AssetsMinifyInit {
 
 	public function headerServe() {
 
-		//Manage the scripts to be printed in the header
-		$this->headerServeScripts();
-
 		//Compile css stylesheets
 		$this->generateCss();
 
@@ -176,6 +173,9 @@ class AssetsMinifyInit {
 
 		//Print css inclusion in the page
 		$this->dumpCss( 'head.css' );
+
+		//Manage the scripts to be printed in the header
+		$this->headerServeScripts();
 
 	}
 
