@@ -158,21 +158,20 @@ class AssetsMinifyInit {
 		$this->generateLess();
 
 		//Manage the stylesheets
-		if ( empty($this->styles) )
-			return false;
+		if ( !empty($this->styles) ) {
+			$mtime = md5(implode('&', $this->mTimesStyles));
 
-		$mtime = md5(implode('&', $this->mTimesStyles));
+			if ( !$this->cache->has( "head.css" ) || get_option('as_minify_head_css_mtime') != $mtime ) {
+				update_option( 'as_minify_head_css_mtime', $mtime );
 
-		if ( !$this->cache->has( "head.css" ) || get_option('as_minify_head_css_mtime') != $mtime ) {
-			update_option( 'as_minify_head_css_mtime', $mtime );
+				//Save the asseticized stylesheets
+				$dumped = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
+				$this->cache->set( "head.css", str_replace('../', '/', $dumped ) );
+			}
 
-			//Save the asseticized stylesheets
-			$dumped = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
-			$this->cache->set( "head.css", str_replace('../', '/', $dumped ) );
+			//Print css inclusion in the page
+			$this->dumpCss( 'head.css' );
 		}
-
-		//Print css inclusion in the page
-		$this->dumpCss( 'head.css' );
 
 		//Manage the scripts to be printed in the header
 		$this->headerServeScripts();
@@ -269,7 +268,7 @@ class AssetsMinifyInit {
 		}
 
 		//Print <script> inclusion in the page
-		$this->dumpJs( 'head.js' );
+		$this->dumpJs( 'head.js', false );
 	}
 
 	public function footerServe() {
@@ -289,8 +288,8 @@ class AssetsMinifyInit {
 		$this->dumpJs( 'foot.js' );
 	}
 
-	protected function dumpJs( $filename ) {
-		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename . "'></script>";
+	protected function dumpJs( $filename, $async = true ) {
+		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename . "'" . ($async ? " async" : "") . "></script>";
 	}
 
 	protected function dumpCss( $filename ) {
