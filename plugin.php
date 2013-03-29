@@ -9,12 +9,13 @@ Author URI: http://www.artera.it
 */
 
 //Autoloader
-spl_autoload_register(function( $classname ) {
+function amAutoloader( $classname ) {
 	$filename = str_replace("\\", "/", __DIR__ . "/lib/$classname.php");
 
 	if ( file_exists( $filename ) )
 		include_once $filename;
-});
+}
+spl_autoload_register('amAutoloader');
 
 //Start
 if ( !is_admin() )
