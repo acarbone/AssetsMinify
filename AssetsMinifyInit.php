@@ -104,6 +104,9 @@ class AssetsMinifyInit {
 			//Save the source filename for every script enqueued
 			$this->scripts[ $where ][ $handle ] = getcwd() . $script;
 
+			if ( !file_exists($this->scripts[ $where ][ $handle ]) )
+				continue;
+
 			$this->mTimes[ $where ][ $handle ] = filemtime( $this->scripts[ $where ][ $handle ] );
 
 			//Remove scripts from the queue so this plugin will be
@@ -130,12 +133,24 @@ class AssetsMinifyInit {
 			$ext = substr( $style, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
 				$this->sass[ $handle ] = getcwd() . $style;
+
+				if ( !file_exists($this->sass[ $handle ]) )
+					continue;
+
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} elseif ( $ext == '.less' ) {
 				$this->less[ $handle ] = getcwd() . $style;
+
+				if ( !file_exists($this->less[ $handle ]) )
+					continue;
+
 				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
 				$this->styles[ $handle ] = getcwd() . $style;
+
+				if ( !file_exists($this->styles[ $handle ]) )
+					continue;
+
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
 
