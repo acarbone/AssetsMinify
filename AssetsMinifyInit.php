@@ -86,6 +86,9 @@ class AssetsMinifyInit {
 	public function extractScripts() {
 		global $wp_scripts;
 
+		if ( empty($wp_scripts->queue) )
+			return;
+
 		foreach( $wp_scripts->queue as $handle ) {
 
 			//Remove absolute part of the path if it's specified in the src
@@ -119,6 +122,9 @@ class AssetsMinifyInit {
 
 	public function extractStyles() {
 		global $wp_styles;
+
+		if ( empty($wp_styles->queue) )
+			return;
 
 		foreach( $wp_styles->queue as $handle ) {
 
