@@ -49,4 +49,3 @@ function amPluginsLoaded() {
 	new AssetsMinifyAdmin;	
 }
 add_action( 'plugins_loaded', 'amPluginsLoaded' );
-spl_autoload_register('amAutoloader');
