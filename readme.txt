@@ -4,9 +4,9 @@ Donate link:
 Tags: assets, minify, css, js, less, sass, compass
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.0.1
 
 AssetsMinify is a WordPress plugin based on Assetic library to minify JS and CSS assets and compile sass/less stylesheets.
 
