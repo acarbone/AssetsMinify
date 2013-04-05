@@ -271,7 +271,7 @@ class AssetsMinifyInit {
 
 		//Add less compiled stylesheet to normal css queue
 		$this->styles = array( 'styles-am-generated' => $this->assetsPath . "styles.css");
-		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['less-am-generated']) );
+		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['styles-am-generated']) );
 
 	}
 
