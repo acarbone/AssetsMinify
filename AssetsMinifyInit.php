@@ -138,25 +138,28 @@ class AssetsMinifyInit {
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-				$this->sass[ $handle ] = getcwd() . $style;
+				$filepath = getcwd() . $style;
 
-				if ( !file_exists($this->sass[ $handle ]) )
+				if ( !file_exists($filepath) )
 					continue;
 
+				$this->sass[ $handle ]       = $filepath;
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} elseif ( $ext == '.less' ) {
-				$this->less[ $handle ] = getcwd() . $style;
+				$filepath = getcwd() . $style;
 
-				if ( !file_exists($this->less[ $handle ]) )
+				if ( !file_exists($filepath) )
 					continue;
 
+				$this->less[ $handle ]       = $filepath;
 				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
-				$this->styles[ $handle ] = getcwd() . $style;
+				$filepath = getcwd() . $style;
 
-				if ( !file_exists($this->styles[ $handle ]) )
+				if ( !file_exists($filepath) )
 					continue;
 
+				$this->styles[ $handle ]       = $filepath;
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
 
