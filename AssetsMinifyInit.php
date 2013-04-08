@@ -105,12 +105,13 @@ class AssetsMinifyInit {
 				$where = 'header';
 
 			//Save the source filename for every script enqueued
-			$this->scripts[ $where ][ $handle ] = getcwd() . $script;
+			$filepath = getcwd() . $script;
 
-			if ( !file_exists($this->scripts[ $where ][ $handle ]) )
+			if ( !file_exists($filepath) )
 				continue;
 
-			$this->mTimes[ $where ][ $handle ] = filemtime( $this->scripts[ $where ][ $handle ] );
+			$this->scripts[ $where ][ $handle ] = $filepath;
+			$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
 
 			//Remove scripts from the queue so this plugin will be
 			//responsible to include all the scripts
