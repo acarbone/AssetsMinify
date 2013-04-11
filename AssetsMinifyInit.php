@@ -186,16 +186,16 @@ class AssetsMinifyInit {
 		if ( !empty($this->styles) ) {
 			$mtime = md5(implode('&', $this->mTimesStyles));
 
-			if ( !$this->cache->has( "{$mtime}.css" ) ) { //|| get_option('as_minify_head_css_mtime') != $mtime
+			if ( !$this->cache->has( "head-{$mtime}.css" ) ) {
 				update_option( 'as_minify_head_css_mtime', $mtime );
 
 				//Save the asseticized stylesheets
 				$dumped = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
-				$this->cache->set( "{$mtime}.css", str_replace('../', '/', $dumped ) );
+				$this->cache->set( "head-{$mtime}.css", str_replace('../', '/', $dumped ) );
 			}
 
 			//Print css inclusion in the page
-			$this->dumpCss( "{$mtime}.css" );
+			$this->dumpCss( "head-{$mtime}.css" );
 		}
 
 		//Manage the scripts to be printed in the header
