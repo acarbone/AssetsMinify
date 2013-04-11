@@ -210,8 +210,7 @@ class AssetsMinifyInit {
 		$mtime = md5(implode('&', $this->mTimesSass));
 
 		//If sass stylesheets have been updated -> compass compile
-		if ( !$this->cache->has( "sass.css" ) || get_option('as_minify_head_sass_mtime') != $mtime ) {
-			update_option( 'as_minify_head_sass_mtime', $mtime );
+		if ( !$this->cache->has( "sass-{$mtime}.css" ) ) {
 
 			if ( get_option('am_use_compass', 0) != 0 ) {
 				//Define compass filter instance and sprite images paths
@@ -227,11 +226,11 @@ class AssetsMinifyInit {
 			}
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "sass.css", $this->css->createAsset( $this->sass, array( $filter, 'CssRewrite' ) )->dump() );
+			$this->cache->set( "sass-{$mtime}.css", $this->css->createAsset( $this->sass, array( $filter, 'CssRewrite' ) )->dump() );
 		}
 
 		//Add sass compiled stylesheet to normal css queue
-		$this->styles['sass-am-generated'] = $this->assetsPath . "sass.css";
+		$this->styles['sass-am-generated'] = $this->assetsPath . "sass-{$mtime}.css";
 		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
 
 	}
@@ -243,18 +242,17 @@ class AssetsMinifyInit {
 		$mtime = md5(implode('&', $this->mTimesLess));
 
 		//If less stylesheets have been updated compile them
-		if ( !$this->cache->has( "less.css" ) || get_option('as_minify_head_less_mtime') != $mtime ) {
-			update_option( 'as_minify_head_less_mtime', $mtime );
+		if ( !$this->cache->has( "less-{$mtime}.css" )  ) {
 
 			//Define compass filter instance and sprite images paths
 			$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "less.css", $this->css->createAsset( $this->less, array( 'Lessphp', 'CssRewrite' ) )->dump() );
+			$this->cache->set( "less-{$mtime}.css", $this->css->createAsset( $this->less, array( 'Lessphp', 'CssRewrite' ) )->dump() );
 		}
 
 		//Add less compiled stylesheet to normal css queue
-		$this->styles['less-am-generated'] = $this->assetsPath . "less.css";
+		$this->styles['less-am-generated'] = $this->assetsPath . "less-{$mtime}.css";
 		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
 
 	}
@@ -266,15 +264,14 @@ class AssetsMinifyInit {
 		$mtime = md5(implode('&', $this->mTimesStyles));
 
 		//If less stylesheets have been updated compile them
-		if ( !$this->cache->has( "styles.css" ) || get_option('as_minify_head_styles_mtime') != $mtime ) {
-			update_option( 'as_minify_head_styles_mtime', $mtime );
+		if ( !$this->cache->has( "styles-{$mtime}.css" ) ) {
 
 			//Save the asseticized stylesheets
-			$this->cache->set( "styles.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
+			$this->cache->set( "styles-{$mtime}.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
 		}
 
 		//Add less compiled stylesheet to normal css queue
-		$this->styles = array( 'styles-am-generated' => $this->assetsPath . "styles.css");
+		$this->styles = array( 'styles-am-generated' => $this->assetsPath . "styles-{$mtime}.css");
 		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['styles-am-generated']) );
 
 	}
@@ -285,15 +282,14 @@ class AssetsMinifyInit {
 
 		$mtime = md5(implode('&', $this->mTimes['header']));
 
-		if ( !$this->cache->has( "head.js" ) || get_option('as_minify_head_mtime') != $mtime ) {
-			update_option( 'as_minify_head_mtime', $mtime );
+		if ( !$this->cache->has( "head-{$mtime}.js" ) ) {
 
 			//Save the asseticized header scripts
-			$this->cache->set( "head.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+			$this->cache->set( "head-{$mtime}.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
 		}
 
 		//Print <script> inclusion in the page
-		$this->dumpJs( 'head.js', false );
+		$this->dumpJs( 'head-{$mtime}.js', false );
 	}
 
 	public function footerServe() {
@@ -302,15 +298,14 @@ class AssetsMinifyInit {
 
 		$mtime = md5(implode('&', $this->mTimes['footer']));
 
-		if ( !$this->cache->has( "foot.js" ) || get_option('as_minify_foot_mtime') != $mtime ) {
-			update_option( 'as_minify_foot_mtime', $mtime );
+		if ( !$this->cache->has( "foot-{$mtime}.js" ) ) {
 
 			//Save the asseticized footer scripts
-			$this->cache->set( "foot.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
+			$this->cache->set( "foot-{$mtime}.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
 		}
 
 		//Print <script> inclusion in the page
-		$this->dumpJs( 'foot.js' );
+		$this->dumpJs( 'foot-{$mtime}.js' );
 	}
 
 	protected function dumpJs( $filename, $async = true ) {
