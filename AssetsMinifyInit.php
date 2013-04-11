@@ -68,8 +68,11 @@ class AssetsMinifyInit {
 		$uploadsDir = wp_upload_dir();
 		$this->assetsUrl  = $uploadsDir['baseurl'] . '/am_assets/';
 		$this->assetsPath = $uploadsDir['basedir'] . '/am_assets/';
+
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
+		elseif ( date('d') == 1 )
+			$this->gc();
 
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
@@ -81,6 +84,12 @@ class AssetsMinifyInit {
 		add_action( 'wp_head',   array( $this, 'headerServe' ) );
 		add_action( 'wp_footer', array( $this, 'footerServe' ) );
 
+	}
+
+	public function gc() {
+		foreach ( glob("{$this->assetsPath}*.*") as $filepath )
+			if ( filemtime($filepath) <= time() - 2592000 ) //If the file is older than a month is removed
+				unlink($filepath);
 	}
 
 	public function extractScripts() {
