@@ -71,7 +71,7 @@ class AssetsMinifyInit {
 
 		if ( !is_dir($this->assetsPath) )
 			mkdir($this->assetsPath, 0777);
-		elseif ( date('d') == 1 )
+		elseif ( get_option('am_last_gc', 0) <= time() - 864000 ) //every 10 days
 			$this->gc();
 
 		$this->cache = new FilesystemCache( $this->assetsPath );
@@ -87,8 +87,9 @@ class AssetsMinifyInit {
 	}
 
 	public function gc() {
+		update_option( 'am_last_gc', time() );
 		foreach ( glob("{$this->assetsPath}*.*") as $filepath )
-			if ( filemtime($filepath) <= time() - 2592000 ) //If the file is older than a month is removed
+			if ( filemtime($filepath) <= time() - 864000 ) //If the file is older than 10 days then is removed
 				unlink($filepath);
 	}
 
