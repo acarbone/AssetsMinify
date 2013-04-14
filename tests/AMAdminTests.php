@@ -8,11 +8,13 @@ class AMAdminTests extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-	}
-
-	public function testAMInitialization() {
-		$this->assertTrue( function_exists('amAutoloader') );
-		$this->assertTrue( function_exists('amPluginsLoaded') );
 		$this->plugin = amPluginsLoaded();
 	}
+
+	public function testInitialization() {
+		$this->assertTrue( function_exists('amAutoloader') );
+		$this->assertTrue( function_exists('amPluginsLoaded') );
+		$this->assertInstanceOf('AssetsMinifyAdmin', $this->plugin);
+	}
+
 }
