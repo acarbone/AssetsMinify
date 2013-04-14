@@ -26,4 +26,12 @@ class AMInitTests extends WP_UnitTestCase {
 		$this->assertTrue( is_dir($uploadsDir['basedir'] . '/am_assets/') );
 	}
 
+	public function testGC() {
+		$uploadsDir = wp_upload_dir();
+		$this->plugin->gc();
+		$this->assertEquals( get_option('am_last_gc'), time() );
+		foreach ( glob($uploadsDir['basedir'] . "/am_assets/*.*") as $filepath )
+			$this->assertFalse( filemtime($filepath) <= time() - 864000 );
+	}
+
 }
