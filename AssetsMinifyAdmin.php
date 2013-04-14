@@ -43,6 +43,6 @@ class AssetsMinifyAdmin {
 	}
 }
 function amPluginsLoaded() {
-	new AssetsMinifyAdmin;	
+	return new AssetsMinifyAdmin;	
 }
 add_action( 'plugins_loaded', 'amPluginsLoaded' );
