@@ -43,6 +43,9 @@ class AssetsMinifyInit {
 	protected $jsMin        = 'JSMin';
 	protected $cssMin       = 'CssMin';
 
+	/**
+	 * Constructor of the class
+	 */
 	public function __construct() {
 
 		//Init assetic's object to manage js minify
@@ -55,11 +58,11 @@ class AssetsMinifyInit {
 		$this->css->setAssetManager( new AssetManager );
 		$this->css->setFilterManager( new FilterManager );
 
-		//Define filter for js minify
+		//Defines filter for js minify
 		$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
 		$this->jsFilters []= $this->jsMin;
 
-		//Define filter for css minify
+		//Defines filter for css minify
 		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
 		$this->css->getFilterManager()->set('CssRewrite', new CssRewriteFilter);
 		$this->cssFilters []= $this->cssMin;
@@ -69,14 +72,15 @@ class AssetsMinifyInit {
 		$this->assetsUrl  = $uploadsDir['baseurl'] . '/am_assets/';
 		$this->assetsPath = $uploadsDir['basedir'] . '/am_assets/';
 
-		if ( !is_dir($this->assetsPath) )
+		if ( !is_dir($this->assetsPath) ) //Creates the AM cache dir
 			mkdir($this->assetsPath, 0777);
-		elseif ( get_option('am_last_gc', 0) <= time() - 864000 ) //every 10 days
+		elseif ( get_option('am_last_gc', 0) <= time() - 864000 ) //Every 10 days the garbage collector is called
 			$this->gc();
 
+		//Manager for Filesystem management
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
-		//Detect all js and css added to wordpress and deny their inclusion
+		//Detects all js and css added to WordPress and removes their inclusion
 		add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
 		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 
@@ -86,6 +90,9 @@ class AssetsMinifyInit {
 
 	}
 
+	/**
+	 * Garbage collector for 10 days old files
+	 */
 	public function gc() {
 		update_option( 'am_last_gc', time() );
 		foreach ( glob("{$this->assetsPath}*.*") as $filepath )
@@ -93,6 +100,9 @@ class AssetsMinifyInit {
 				unlink($filepath);
 	}
 
+	/**
+	 * Takes all the scripts enqueued to the theme and removes them from the queue
+	 */
 	public function extractScripts() {
 		global $wp_scripts;
 
@@ -101,10 +111,10 @@ class AssetsMinifyInit {
 
 		foreach( $wp_scripts->queue as $handle ) {
 
-			//Remove absolute part of the path if it's specified in the src
+			//Removes absolute part of the path if it's specified in the src
 			$script = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
 
-			//Don't manage other domains included scripts
+			//Doesn't manage other domains included scripts
 			if ( strpos($script, "http") === 0 || strpos($script, "//") === 0 )
 				continue;
 
@@ -114,7 +124,7 @@ class AssetsMinifyInit {
 			if ( empty($wp_scripts->registered[$handle]->extra) )
 				$where = 'header';
 
-			//Save the source filename for every script enqueued
+			//Saves the source filename for every script enqueued
 			$filepath = getcwd() . $script;
 
 			if ( !file_exists($filepath) )
@@ -123,14 +133,17 @@ class AssetsMinifyInit {
 			$this->scripts[ $where ][ $handle ] = $filepath;
 			$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
 
-			//Remove scripts from the queue so this plugin will be
-			//responsible to include all the scripts
+			//Removes scripts from the queue so this plugin will be
+			//responsible to include all the scripts except other domains ones.
 			$wp_scripts->dequeue( $handle );
 
 		}
 
 	}
 
+	/**
+	 * Takes all the stylesheets enqueued to the theme and removes them from the queue
+	 */
 	public function extractStyles() {
 		global $wp_styles;
 
@@ -139,10 +152,10 @@ class AssetsMinifyInit {
 
 		foreach( $wp_styles->queue as $handle ) {
 
-			//Remove absolute part of the path if it's specified in the src
+			//Removes absolute part of the path if it's specified in the src
 			$style = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_styles->registered[$handle]->src );
 
-			//Don't manage other domains included stylesheets
+			//Doesn't manage other domains included stylesheets
 			if ( strpos($style, "http") === 0 || strpos($style, "//") === 0 )
 				continue;
 
@@ -174,52 +187,58 @@ class AssetsMinifyInit {
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
 
-			//Remove css from the queue so this plugin will be
+			//Removes css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
 			$wp_styles->dequeue( $handle );
 
 		}
 	}
 
+	/**
+	 * Returns header's inclusion for CSS and JS (if provided)
+	 */
 	public function headerServe() {
 
-		//Compile css stylesheets
+		//Compiles CSS stylesheets
 		$this->generateCss();
 
-		//Compile sass stylesheets
+		//Compiles SASS stylesheets
 		$this->generateSass();
 
-		//Compile less stylesheets
+		//Compiles LESS stylesheets
 		$this->generateLess();
 
-		//Manage the stylesheets
+		//Manages the stylesheets
 		if ( !empty($this->styles) ) {
 			$mtime = md5(implode('&', $this->mTimesStyles));
 
-			//Save the asseticized stylesheets
+			//Saves the asseticized stylesheets
 			if ( !$this->cache->has( "head-{$mtime}.css" ) )
 				$this->cache->set( "head-{$mtime}.css", str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() ) );
 
-			//Print css inclusion in the page
+			//Prints css inclusion in the page
 			$this->dumpCss( "head-{$mtime}.css" );
 		}
 
-		//Manage the scripts to be printed in the header
+		//Manages the scripts to be printed in the header
 		$this->headerServeScripts();
 
 	}
 
+	/**
+	 * Takes all the SASS stylesheets and manages their queue to asseticize them
+	 */
 	public function generateSass() {
 		if ( empty($this->sass) )
 			return false;
 
 		$mtime = md5(implode('&', $this->mTimesSass));
 
-		//If sass stylesheets have been updated -> compass compile
+		//If SASS stylesheets have been updated -> compass compile
 		if ( !$this->cache->has( "sass-{$mtime}.css" ) ) {
 
 			if ( get_option('am_use_compass', 0) != 0 ) {
-				//Define compass filter instance and sprite images paths
+				//Defines compass filter instance and sprite images paths
 				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
 				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
 				$compassInstance->setGeneratedImagesPath( $this->assetsPath );
@@ -231,85 +250,103 @@ class AssetsMinifyInit {
 				$filter = 'Scssphp';
 			}
 
-			//Save the asseticized stylesheets
+			//Saves the asseticized stylesheets
 			$this->cache->set( "sass-{$mtime}.css", $this->css->createAsset( $this->sass, array( $filter, 'CssRewrite' ) )->dump() );
 		}
 
-		//Add sass compiled stylesheet to normal css queue
+		//Adds SASS compiled stylesheet to normal css queue
 		$this->styles['sass-am-generated']       = $this->assetsPath . "sass-{$mtime}.css";
 		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
 
 	}
 
+	/**
+	 * Takes all the LESS stylesheets and manages their queue to asseticize them
+	 */
 	public function generateLess() {
 		if ( empty($this->less) )
 			return false;
 
 		$mtime = md5(implode('&', $this->mTimesLess));
 
-		//If less stylesheets have been updated compile them
+		//If LESS stylesheets have been updated compile them
 		if ( !$this->cache->has( "less-{$mtime}.css" )  ) {
-			//Define compass filter instance and sprite images paths
+			//Defines compass filter instance and sprite images paths
 			$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
 
-			//Save the asseticized stylesheets
+			//Saves the asseticized stylesheets
 			$this->cache->set( "less-{$mtime}.css", $this->css->createAsset( $this->less, array( 'Lessphp', 'CssRewrite' ) )->dump() );
 		}
 
-		//Add less compiled stylesheet to normal css queue
+		//Adds LESS compiled stylesheet to normal css queue
 		$this->styles['less-am-generated']       = $this->assetsPath . "less-{$mtime}.css";
 		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
 
 	}
 
+	/**
+	 * Takes all the CSS stylesheets and manages their queue to asseticize them
+	 */
 	public function generateCss() {
 		if ( empty($this->styles) )
 			return false;
 
 		$mtime = md5(implode('&', $this->mTimesStyles));
 
-		//If less stylesheets have been updated compile and save them 
+		//If CSS stylesheets have been updated compile and save them 
 		if ( !$this->cache->has( "styles-{$mtime}.css" ) )
 			$this->cache->set( "styles-{$mtime}.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
 
-		//Add less compiled stylesheet to normal css queue
+		//Adds CSS compiled stylesheet to normal css queue
 		$this->styles       = array( 'styles-am-generated' => $this->assetsPath . "styles-{$mtime}.css");
 		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['styles-am-generated']) );
 
 	}
 
+	/**
+	 * Returns header's inclusion for JS (if provided)
+	 */
 	public function headerServeScripts() {
 		if ( empty($this->scripts['header']) )
 			return false;
 
 		$mtime = md5(implode('&', $this->mTimes['header']));
 
-		//Save the asseticized header scripts
+		//Saves the asseticized header scripts
 		if ( !$this->cache->has( "head-{$mtime}.js" ) )
 			$this->cache->set( "head-{$mtime}.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
 
-		//Print <script> inclusion in the page
+		//Prints <script> inclusion in the page
 		$this->dumpJs( "head-{$mtime}.js", false );
 	}
 
+	/**
+	 * Returns footer's inclusion for JS (if provided)
+	 */
 	public function footerServe() {
 		if ( empty($this->scripts['footer']) )
 			return false;
 
 		$mtime = md5(implode('&', $this->mTimes['footer']));
 
-		//Save the asseticized footer scripts
+		//Saves the asseticized footer scripts
 		if ( !$this->cache->has( "foot-{$mtime}.js" ) )
 			$this->cache->set( "foot-{$mtime}.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
 
-		//Print <script> inclusion in the page
+		//Prints <script> inclusion in the page
 		$this->dumpJs( "foot-{$mtime}.js" );
 	}
 
+	/**
+	 * Prints <script> tag to include the JS
+	 */
 	protected function dumpJs( $filename, $async = true ) {
 		echo "<script type='text/javascript' src='" . $this->assetsUrl . $filename . "'" . ($async ? " async" : "") . "></script>";
 	}
 
+	/**
+	 * Prints <link> tag to include the CSS
+	 */
 	protected function dumpCss( $filename ) {
 		echo "<link href='" . $this->assetsUrl . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
 	}
