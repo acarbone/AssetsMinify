@@ -16,7 +16,7 @@ How many times have you wished to minify in a clean way all the stylesheets and 
 
 AssetsMinify takes every CSS and JS asset included using `wp_enqueue_style()` and `wp_enqueue_script()` and Merges+Minifies them.
 
-You can also use AssetsMinify to create your WP theme using Compass / sass / less without configuring any `config.rb` or *that kind of stuff*.
+You can also use AssetsMinify to create your WP theme using Compass / SASS / LESS without configuring any `config.rb` or *that kind of stuff*.
 
 AssetsMinify is based on Assetic library.
 This plugin has been tested up to WordPress 3.6 beta.

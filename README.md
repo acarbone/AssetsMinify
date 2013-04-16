@@ -13,7 +13,7 @@ It's good practice include JS before `</body>` for better performances, but not 
 
 AssetsMinify takes every CSS and JS asset included using `wp_enqueue_style()` and `wp_enqueue_script()` and Merges+Minifies them.
 
-You can also use AssetsMinify to create your WP theme using Compass / sass / less without configuring any `config.rb` or *that kind of stuff*.
+You can also use AssetsMinify to create your WP theme using Compass / SASS / LESS without configuring any `config.rb` or *that kind of stuff*.
 
 
 How it works
