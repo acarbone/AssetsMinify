@@ -87,6 +87,7 @@ class AMInitTests extends WP_UnitTestCase {
 			$wp_scripts->dequeue( $handle );
 		}
 		$this->assertEquals( count($wp_scripts->queue), $external );
+		$this->assertEquals( count($wp_scripts->queue), 1 );
 	}
 
 }
