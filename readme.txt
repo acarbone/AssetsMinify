@@ -19,11 +19,12 @@ AssetsMinify takes every CSS and JS asset included using `wp_enqueue_style()` an
 You can also use AssetsMinify to create your WP theme using Compass / SASS / LESS without configuring any `config.rb` or *that kind of stuff*.
 
 AssetsMinify is based on Assetic library.
+
 This plugin has been tested up to WordPress 3.6 beta.
 
 [Fork me on Github](https://github.com/acarbone/AssetsMinify).
 
-= Define multi-set per page =
+= Define inclusion-sets per-page =
 
 Although it is not a best practice you can define resources inclusions basing on the WordPress page just like this `if ( is_page( 2 ) ) { wp_enqueue_style( 'stylesheet-name' ); }`.
 
