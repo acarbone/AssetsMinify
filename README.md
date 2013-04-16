@@ -27,7 +27,7 @@ wp_enqueue_style( 'screen',  get_template_directory_uri() . '/css/screen.css' );
 wp_enqueue_style( 'home',    get_template_directory_uri() . '/sass/home.scss' );
 wp_enqueue_style( 'content', get_template_directory_uri() . '/less/content.less' );
 ```
-As you can see I have included three different type of stylesheets: css / scss / less. <br>
+As you can see I have included three different type of stylesheets: CSS / SCSS / LESS. <br>
 This will work! AssetsMinify will compile 'em all and will combine them in a single css file.
 
 ``` php
