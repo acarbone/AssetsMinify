@@ -38,7 +38,7 @@ Although it is not a best practice you can define resources inclusions basing on
 
 == Frequently asked questions ==
 
-1. Which version of PHP is needed to use AssetsMinify on my WordPress installation?
+= Which version of PHP is needed to use AssetsMinify on my WordPress installation? =
 
 PHP 5.3+
 
