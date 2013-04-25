@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 Use Compass, SASS and LESS to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
 
@@ -51,11 +51,14 @@ PHP 5.3+
 
 == Changelog ==
 
+= 1.1.1 =
+
+* Provided compatibility with wp_localize_script()
+
 = 1.1.0 =
 
 * Updated cache system to provide multi-sets of different stylesheets or scripts per-page
 * Defined garbage collector for old cache files
-* Provided compatibility with wp_localize_script()
 
 = 1.0.1 =
 
