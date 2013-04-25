@@ -55,6 +55,7 @@ PHP 5.3+
 
 * Updated cache system to provide multi-sets of different stylesheets or scripts per-page
 * Defined garbage collector for old cache files
+* Provided compatibility with wp_localize_script()
 
 = 1.0.1 =
 
