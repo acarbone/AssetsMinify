@@ -13,6 +13,7 @@ use Assetic\Filter\ScssphpFilter;
 use Assetic\Filter\CompassFilter;
 use Assetic\Filter\LessphpFilter;
 use Assetic\Cache\FilesystemCache;
+use Assetic\Asset\StringAsset;
 
 /**
  * Class that holds plugin's logic.
@@ -317,6 +318,7 @@ class AssetsMinifyInit {
 			$this->cache->set( "head-{$mtime}.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
 
 		//Prints <script> inclusion in the page
+		$this->dumpScriptData( 'header' );
 		$this->dumpJs( "head-{$mtime}.js", false );
 	}
 
@@ -334,7 +336,27 @@ class AssetsMinifyInit {
 			$this->cache->set( "foot-{$mtime}.js", $this->js->createAsset( $this->scripts['footer'], $this->jsFilters )->dump() );
 
 		//Prints <script> inclusion in the page
+		$this->dumpScriptData( 'footer' );
 		$this->dumpJs( "foot-{$mtime}.js" );
+	}
+
+	/**
+	 * Combines the script data from all minified scripts
+	 */
+	protected function buildScriptData( $where ) {
+		global $wp_scripts;
+		$data = '';
+
+		if ( empty($this->scripts[$where] ) )
+			return '';
+
+		foreach ($this->scripts[$where] as $handle => $filepath) {
+			$data .= $wp_scripts->print_extra_script( $handle, false );
+		}
+
+		$asset = new StringAsset( $data, array(new JSMinFilter) );
+
+		return $asset->dump();
 	}
 
 	/**
@@ -349,6 +371,22 @@ class AssetsMinifyInit {
 	 */
 	protected function dumpCss( $filename ) {
 		echo "<link href='" . $this->assetsUrl . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
+	}
+
+	/**
+	 * Prints <script> tags with addtional script data and i10n
+	 */
+	protected function dumpScriptData( $where ) {
+		$data = $this->buildScriptData( $where );
+
+		if (empty($data))
+			return false;
+
+		echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
+		echo "/* <![CDATA[ */\n";
+		echo "$data\n";
+		echo "/* ]]> */\n";
+		echo "</script>\n";
 	}
 }
 

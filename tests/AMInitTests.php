@@ -90,4 +90,37 @@ class AMInitTests extends WP_UnitTestCase {
 		$this->assertEquals( count($wp_scripts->queue), 1 );
 	}
 
+	public function testLocalizeScripts() {
+		global $wp_scripts;
+
+		wp_enqueue_script( 'twentytwelve-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '1.0', true );
+
+		wp_localize_script( 'twentytwelve-navigation', 'twentytwelveNavigation', array(
+			'var' => 'value'
+		));
+
+		// Temporarily change the cwd to ABSPATH so that extractScripts() can
+		// find the scripts.
+		$cwd = getcwd();
+		chdir( ABSPATH );
+
+		$this->plugin->extractScripts();
+
+		chdir( $cwd );
+
+		ob_start();
+		$this->plugin->footerServe();
+		$footer = ob_get_clean();
+
+		ob_start();
+		$this->plugin->headerServe();
+		$header = ob_get_clean();
+
+		$rawJs = 'var twentytwelveNavigation = {"var":"value"};';
+		$minfiedJs = 'var twentytwelveNavigation={"var":"value"};';
+
+		$this->assertSame( $rawJs, $wp_scripts->registered['twentytwelve-navigation']->extra['data'] );
+		$this->assertNotContains( $minfiedJs, $header );
+		$this->assertContains( $minfiedJs, $footer );
+	}
 }
