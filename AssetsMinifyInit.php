@@ -102,6 +102,13 @@ class AssetsMinifyInit {
 	}
 
 	/**
+	 * Cleans the path of the site from the filepath
+	 */
+	public function cleanPath( $filepath ) {
+		return str_replace( get_site_url(), "", $filepath );
+	}
+
+	/**
 	 * Takes all the scripts enqueued to the theme and removes them from the queue
 	 */
 	public function extractScripts() {
@@ -115,7 +122,7 @@ class AssetsMinifyInit {
 
 		foreach( $wp_scripts->to_do as $key => $handle ) {
 			//Removes absolute part of the path if it's specified in the src
-			$script = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_scripts->registered[$handle]->src );
+			$script = $this->cleanPath($wp_scripts->registered[$handle]->src);
 
 			$script = str_replace( "/wp-includes/", str_replace( getcwd(), '', ABSPATH ) . "wp-includes/", $script );
 
@@ -162,7 +169,7 @@ class AssetsMinifyInit {
 
 		foreach( $wp_styles->to_do as $key => $handle ) {
 			//Removes absolute part of the path if it's specified in the src
-			$style = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_styles->registered[$handle]->src );
+			$style = $this->cleanPath($wp_styles->registered[$handle]->src);
 
 			//Doesn't manage other domains included stylesheets
 			if ( strpos($style, "http") === 0 || strpos($style, "//") === 0 )

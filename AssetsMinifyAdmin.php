@@ -14,8 +14,12 @@ class AssetsMinifyAdmin {
 
 		if ( isset($_GET['empty_cache']) ) {
 			$uploadsDir = wp_upload_dir();
-			array_map('unlink', glob($uploadsDir['basedir'] . '/am_assets/' . "*.*"));
-			wp_redirect( admin_url( str_replace(array('/wp-admin/', '&empty_cache'), '', $_SERVER['REQUEST_URI']) ) );
+			$filesList = glob($uploadsDir['basedir'] . '/am_assets/' . "*.*");
+			if ( $filesList !== false )
+				array_map('unlink', $filesList);
+			wp_redirect( admin_url( "options-general.php?page=assets-minify" ) );
+
+
 		}
 	}
 
