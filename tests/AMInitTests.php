@@ -123,4 +123,17 @@ class AMInitTests extends WP_UnitTestCase {
 		$this->assertNotContains( $minfiedJs, $header );
 		$this->assertContains( $minfiedJs, $footer );
 	}
+
+	public function testEnqueueDependancies() {
+		global $wp_scripts;
+
+		wp_enqueue_script( 'twentytwelve-navigation', get_template_directory_uri() . '/js/navigation.js', array( 'jquery' ), '1.0', true );
+
+		$cwd = getcwd();
+		chdir( ABSPATH );
+		$this->plugin->extractScripts();
+		chdir( $cwd );
+
+		$this->assertContains( 'jquery', array_keys( $wp_scripts->done ) );
+	}
 }
