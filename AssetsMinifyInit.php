@@ -157,8 +157,10 @@ class AssetsMinifyInit {
 		if ( empty($wp_styles->queue) )
 			return;
 
-		foreach( $wp_styles->queue as $handle ) {
+		// Trigger dependency resolution
+		$wp_styles->all_deps($wp_styles->queue);
 
+		foreach( $wp_styles->to_do as $key => $handle ) {
 			//Removes absolute part of the path if it's specified in the src
 			$style = str_replace( "http://{$_SERVER['SERVER_NAME']}", "", $wp_styles->registered[$handle]->src );
 
@@ -198,6 +200,9 @@ class AssetsMinifyInit {
 			//responsible to include all the stylesheets except other domains ones.
 			$wp_styles->dequeue( $handle );
 
+			//Move the handle to the done array.
+			$wp_styles->done[] = $handle;
+			unset($wp_styles->to_do[$key]);
 		}
 	}
 
