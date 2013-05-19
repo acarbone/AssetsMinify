@@ -139,7 +139,7 @@ class AssetsMinifyInit {
 			//Saves the source filename for every script enqueued
 			$filepath = getcwd() . $script;
 
-			if ( !file_exists($filepath) )
+			if ( empty($script) || !is_file($filepath) )
 				continue;
 
 			$this->scripts[ $where ][ $handle ] = $filepath;
