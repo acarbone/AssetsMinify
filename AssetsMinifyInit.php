@@ -50,12 +50,12 @@ class AssetsMinifyInit {
 	public function __construct() {
 
 		//Init assetic's object to manage js minify
-		$this->js = new AssetFactory( getcwd() );
+		$this->js = new AssetFactory( ABSPATH );
 		$this->js->setAssetManager( new AssetManager );
 		$this->js->setFilterManager( new FilterManager );
 
 		//Init assetic's object to manage css minify
-		$this->css = new AssetFactory( getcwd() );
+		$this->css = new AssetFactory( ABSPATH );
 		$this->css->setAssetManager( new AssetManager );
 		$this->css->setFilterManager( new FilterManager );
 
@@ -124,7 +124,7 @@ class AssetsMinifyInit {
 			//Removes absolute part of the path if it's specified in the src
 			$script = $this->cleanPath($wp_scripts->registered[$handle]->src);
 
-			$script = str_replace( "/wp-includes/", str_replace( getcwd(), '', ABSPATH ) . "wp-includes/", $script );
+			$script = str_replace( "/wp-includes/", str_replace( ABSPATH, '', ABSPATH ) . "wp-includes/", $script );
 
 			//Doesn't manage other domains included scripts
 			if ( strpos($script, "http") === 0 || strpos($script, "//") === 0 )
@@ -137,7 +137,7 @@ class AssetsMinifyInit {
 				$where = 'header';
 
 			//Saves the source filename for every script enqueued
-			$filepath = getcwd() . $script;
+			$filepath = ABSPATH . $script;
 
 			if ( empty($script) || !is_file($filepath) )
 				continue;
@@ -178,7 +178,7 @@ class AssetsMinifyInit {
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-				$filepath = getcwd() . $style;
+				$filepath = ABSPATH . $style;
 
 				if ( !file_exists($filepath) )
 					continue;
@@ -186,7 +186,7 @@ class AssetsMinifyInit {
 				$this->sass[ $handle ]       = $filepath;
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} elseif ( $ext == '.less' ) {
-				$filepath = getcwd() . $style;
+				$filepath = ABSPATH . $style;
 
 				if ( !file_exists($filepath) )
 					continue;
@@ -194,7 +194,7 @@ class AssetsMinifyInit {
 				$this->less[ $handle ]       = $filepath;
 				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
-				$filepath = getcwd() . $style;
+				$filepath = ABSPATH . $style;
 
 				if ( !file_exists($filepath) )
 					continue;
@@ -261,7 +261,7 @@ class AssetsMinifyInit {
 				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
 				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
 				$compassInstance->setGeneratedImagesPath( $this->assetsPath );
-				$compassInstance->setHttpGeneratedImagesPath( str_replace( getcwd(), '', $this->assetsPath ) );
+				$compassInstance->setHttpGeneratedImagesPath( str_replace( ABSPATH, '', $this->assetsPath ) );
 				$this->css->getFilterManager()->set('Compass', $compassInstance);
 				$filter = 'Compass';
 			} else {
