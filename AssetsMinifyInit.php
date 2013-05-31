@@ -105,7 +105,7 @@ class AssetsMinifyInit {
 	 * Cleans the path of the site from the filepath
 	 */
 	public function cleanPath( $filepath ) {
-		return str_replace( get_home_url(), "", $filepath );
+		return str_replace( get_site_url(), "", $filepath );
 	}
 
 	/**
