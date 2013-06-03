@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 
 Use Compass, SASS and LESS to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
 
@@ -50,6 +50,10 @@ PHP 5.3+
 3. Set 777 permissions to you uploads directory
 
 == Changelog ==
+
+= 1.1.3 =
+
+* Provided compatibility with subdirectory WordPress installation
 
 = 1.1.2 =
 
