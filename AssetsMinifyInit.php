@@ -70,7 +70,7 @@ class AssetsMinifyInit {
 
 		//Define assets path to save asseticized files
 		$uploadsDir = wp_upload_dir();
-		$this->assetsUrl  = $uploadsDir['baseurl'] . '/am_assets/';
+		$this->assetsUrl  = str_replace( 'http://', '//', $uploadsDir['baseurl'] ) . '/am_assets/';
 		$this->assetsPath = $uploadsDir['basedir'] . '/am_assets/';
 
 		if ( !is_dir($this->assetsPath) ) //Creates the AM cache dir
