@@ -82,8 +82,10 @@ class AssetsMinifyInit {
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
 		//Detects all js and css added to WordPress and removes their inclusion
-		add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
-		add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
+		if( get_option('am_compress_styles') )
+			add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
+		if( get_option('am_compress_scripts') )
+			add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 
 		//Inclusion of scripts in <head> and before </body>
 		add_action( 'wp_head',   array( $this, 'headerServe' ) );
@@ -102,10 +104,31 @@ class AssetsMinifyInit {
 	}
 
 	/**
-	 * Cleans the path of the site from the filepath
+	 * Guess absolute path from file URL
 	 */
-	public function cleanPath( $filepath ) {
-		return str_replace( get_site_url(), "", $filepath );
+	public function guessPath( $file_url ) {
+
+		$components = parse_url($file_url);
+
+		// Check we have at least a path
+		if( !isset($components['path']) )
+			return false;
+
+		$file_path = false;
+
+		// Script is enqueued from a plugin
+		if( false !== strpos($file_url, WP_PLUGIN_URL) )
+			$file_path = WP_PLUGIN_DIR . str_replace(WP_PLUGIN_URL, '', $file_url);
+
+		// Script is enqueued from a theme
+		if( false !== strpos($file_url, WP_CONTENT_URL) )
+			$file_path = WP_CONTENT_DIR . str_replace(WP_CONTENT_URL, '', $file_url);
+
+		// Script is enqueued from wordpress
+		if( false !== strpos($file_url,  WPINC) )
+			$file_path = untrailingslashit(ABSPATH) . $file_url;
+
+		return $file_path;
 	}
 
 	/**
@@ -121,13 +144,11 @@ class AssetsMinifyInit {
 		$wp_scripts->all_deps($wp_scripts->queue);
 
 		foreach( $wp_scripts->to_do as $key => $handle ) {
-			//Removes absolute part of the path if it's specified in the src
-			$script = $this->cleanPath($wp_scripts->registered[$handle]->src);
 
-			$script = str_replace( "/wp-includes/", str_replace( ABSPATH, '', ABSPATH ) . "wp-includes/", $script );
+			$script_path = $this->guessPath($wp_scripts->registered[$handle]->src);
 
-			//Doesn't manage other domains included scripts
-			if ( strpos($script, "http") === 0 || strpos($script, "//") === 0 )
+			// Script didn't match any case (plugin, theme or wordpress locations)
+			if( false === $script_path )
 				continue;
 
 			$where = 'footer';
@@ -136,13 +157,10 @@ class AssetsMinifyInit {
 			if ( empty($wp_scripts->registered[$handle]->extra) )
 				$where = 'header';
 
-			//Saves the source filename for every script enqueued
-			$filepath = ABSPATH . $script;
-
-			if ( empty($script) || !is_file($filepath) )
+			if ( empty($script_path) || !is_file($script_path) )
 				continue;
 
-			$this->scripts[ $where ][ $handle ] = $filepath;
+			$this->scripts[ $where ][ $handle ] = $script_path;
 			$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
 
 			//Removes scripts from the queue so this plugin will be
@@ -153,6 +171,7 @@ class AssetsMinifyInit {
 			$wp_scripts->done[] = $handle;
 			unset($wp_scripts->to_do[$key]);
 		}
+
 	}
 
 	/**
@@ -169,37 +188,34 @@ class AssetsMinifyInit {
 
 		foreach( $wp_styles->to_do as $key => $handle ) {
 			//Removes absolute part of the path if it's specified in the src
-			$style = $this->cleanPath($wp_styles->registered[$handle]->src);
+			$style_path = $this->guessPath($wp_styles->registered[$handle]->src);
 
-			//Doesn't manage other domains included stylesheets
-			if ( strpos($style, "http") === 0 || strpos($style, "//") === 0 )
+			// Script didn't match any case (plugin, theme or wordpress locations)
+			if( false == $style_path )
 				continue;
 
 			//Separation between css-frameworks stylesheets and .css stylesheets
-			$ext = substr( $style, -5 );
+			$ext = substr( $style_path, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-				$filepath = ABSPATH . $style;
 
-				if ( !file_exists($filepath) )
+				if ( !file_exists($style_path) )
 					continue;
 
-				$this->sass[ $handle ]       = $filepath;
+				$this->sass[ $handle ]       = $style_path;
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} elseif ( $ext == '.less' ) {
-				$filepath = ABSPATH . $style;
 
-				if ( !file_exists($filepath) )
+				if ( !file_exists($style_path) )
 					continue;
 
-				$this->less[ $handle ]       = $filepath;
+				$this->less[ $handle ]       = $style_path;
 				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
-				$filepath = ABSPATH . $style;
 
-				if ( !file_exists($filepath) )
+				if ( !file_exists($style_path) )
 					continue;
 
-				$this->styles[ $handle ]       = $filepath;
+				$this->styles[ $handle ]       = $style_path;
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
 
