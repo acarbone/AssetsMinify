@@ -37,6 +37,8 @@ class AssetsMinifyAdmin {
 	public function options() {
 		register_setting('am_options_group', 'am_use_compass');
 		register_setting('am_options_group', 'am_compass_path');
+		register_setting('am_options_group', 'am_compress_styles');
+		register_setting('am_options_group', 'am_compress_scripts');
 	}
 
 	/**
