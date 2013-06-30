@@ -150,6 +150,8 @@ class AssetsMinifyInit {
 			// Script didn't match any case (plugin, theme or wordpress locations)
 			if( false === $script_path )
 				continue;
+			if ((($theme = wp_get_theme()) && $theme_hook = $theme->template.'_asset_minify_exclude') && function_exists($theme_hook) && $theme_hook($handle, $script))
+				continue; 
 
 			$where = 'footer';
 			//Unfortunately not every WP plugin developer is a JS ninja
@@ -193,6 +195,8 @@ class AssetsMinifyInit {
 			// Script didn't match any case (plugin, theme or wordpress locations)
 			if( false == $style_path )
 				continue;
+			if ((($theme = wp_get_theme()) && $theme_hook = $theme->template.'_asset_minify_exclude') && function_exists($theme_hook) && $theme_hook($handle, $style))
+				continue; 
 
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style_path, -5 );
@@ -267,7 +271,7 @@ class AssetsMinifyInit {
 		if ( empty($this->sass) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimesSass));
+		$mtime = md5(implode('&', $this->mTimesSass) . implode('&', $this->sass));
 
 		//If SASS stylesheets have been updated -> compass compile
 		if ( !$this->cache->has( "sass-{$mtime}.css" ) ) {
@@ -302,7 +306,7 @@ class AssetsMinifyInit {
 		if ( empty($this->less) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimesLess));
+		$mtime = md5(implode('&', $this->mTimesLess) . implode('&', $this->less));
 
 		//If LESS stylesheets have been updated compile them
 		if ( !$this->cache->has( "less-{$mtime}.css" )  ) {
@@ -326,7 +330,7 @@ class AssetsMinifyInit {
 		if ( empty($this->styles) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimesStyles));
+		$mtime = md5(implode('&', $this->mTimesStyles) . implode('&', $this->styles));
 
 		//If CSS stylesheets have been updated compile and save them 
 		if ( !$this->cache->has( "styles-{$mtime}.css" ) )
@@ -345,7 +349,7 @@ class AssetsMinifyInit {
 		if ( empty($this->scripts['header']) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimes['header']));
+		$mtime = md5(implode('&', $this->mTimes['header']) . implode('&', $this->scripts['header']) );
 
 		//Saves the asseticized header scripts
 		if ( !$this->cache->has( "head-{$mtime}.js" ) )
@@ -363,7 +367,7 @@ class AssetsMinifyInit {
 		if ( empty($this->scripts['footer']) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimes['footer']));
+		$mtime = md5(implode('&', $this->mTimes['footer']) . implode('&', $this->scripts['footer']));
 
 		//Saves the asseticized footer scripts
 		if ( !$this->cache->has( "foot-{$mtime}.js" ) )
