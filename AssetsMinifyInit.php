@@ -150,8 +150,6 @@ class AssetsMinifyInit {
 			// Script didn't match any case (plugin, theme or wordpress locations)
 			if( false === $script_path )
 				continue;
-			if ((($theme = wp_get_theme()) && $theme_hook = $theme->template.'_asset_minify_exclude') && function_exists($theme_hook) && $theme_hook($handle, $script))
-				continue; 
 
 			$where = 'footer';
 			//Unfortunately not every WP plugin developer is a JS ninja
@@ -195,8 +193,6 @@ class AssetsMinifyInit {
 			// Script didn't match any case (plugin, theme or wordpress locations)
 			if( false == $style_path )
 				continue;
-			if ((($theme = wp_get_theme()) && $theme_hook = $theme->template.'_asset_minify_exclude') && function_exists($theme_hook) && $theme_hook($handle, $style))
-				continue; 
 
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style_path, -5 );
