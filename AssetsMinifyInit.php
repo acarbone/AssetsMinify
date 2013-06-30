@@ -82,9 +82,9 @@ class AssetsMinifyInit {
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
 		//Detects all js and css added to WordPress and removes their inclusion
-		if( get_option('am_compress_styles') )
+		if( get_option('am_compress_styles', 1) )
 			add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
-		if( get_option('am_compress_scripts') )
+		if( get_option('am_compress_scripts', 1) )
 			add_action( 'wp_print_scripts', array( $this, 'extractScripts' ) );
 
 		//Inclusion of scripts in <head> and before </body>
