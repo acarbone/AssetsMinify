@@ -1,0 +1,11 @@
+<div class="wrap">
+    <div class="icon32" id="icon-options-general"><br></div>
+    <h2>AssetsMinify's configuration / Set inclusions</h2>
+    <p>&nbsp;</p>
+    <form method="post" action="options.php">
+        <?php settings_fields('am_options_group'); ?>
+        <p class="submit">
+            <input type="submit" name="submit" id="submit" class="button button-primary" value="Save" style="margin-right:10px"> <a href="<?php echo admin_url( "options-general.php?page=assets-minify&empty_cache" ) ?>">Empty AssetsMinify's Cache</a> / <a href="<?php echo admin_url( "options-general.php?page=assets-minify" ) ?>">Back to AssetsMinify's main page</a>
+        </p>
+    </form>
+</div>

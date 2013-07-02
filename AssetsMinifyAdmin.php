@@ -18,8 +18,6 @@ class AssetsMinifyAdmin {
 			if ( $filesList !== false )
 				array_map('unlink', $filesList);
 			wp_redirect( admin_url( "options-general.php?page=assets-minify" ) );
-
-
 		}
 	}
 
@@ -45,7 +43,10 @@ class AssetsMinifyAdmin {
 	* Defines plugin's settings
 	*/
 	public function settings() {
-		$this->tpl( "settings.phtml" );
+		if ( isset($_GET['include_or_exclude']) )
+			$this->tpl( "inclusions.phtml" );
+		else 
+			$this->tpl( "settings.phtml" );
 	}
 }
 function amPluginsLoaded() {

@@ -28,7 +28,7 @@
                     </th>
                     <td>
                         <input name="am_compress_styles" type="checkbox" id="am_compress_styles" value="1" <?php checked(1, get_option('am_compress_styles', 1)); ?>>
-                        <span class="description">Use with care! Your theme background images must have an absolute path.</span>
+                        <span class="description">Use with care! Some background-images may not be displayed if running a WordPress unusual environment.</span>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -42,7 +42,7 @@
             </tbody>
         </table>
         <p class="submit">
-            <input type="submit" name="submit" id="submit" class="button button-primary" value="Save" style="margin-right:10px"> <a href="<?php echo admin_url( "options-general.php?page=assets-minify&empty_cache" ) ?>">Empty AssetsMinify's Cache</a>
+            <input type="submit" name="submit" id="submit" class="button button-primary" value="Save" style="margin-right:10px"> <a href="<?php echo admin_url( "options-general.php?page=assets-minify&empty_cache" ) ?>">Empty AssetsMinify's Cache</a> / <a href="<?php echo admin_url( "options-general.php?page=assets-minify&include_or_exclude" ) ?>">Include or exclude resources</a>
         </p>
     </form>
 </div>
