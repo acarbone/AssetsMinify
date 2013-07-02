@@ -24,6 +24,8 @@ class AssetsMinifyInit {
 	public $js;
 	public $css;
 
+	protected $exclusions;
+
 	protected $assetsPath;
 	protected $assetsUrl;
 
@@ -85,6 +87,8 @@ class AssetsMinifyInit {
 		//Manager for Filesystem management
 		$this->cache = new FilesystemCache( $this->assetsPath );
 
+		$this->exclusions = preg_split('/[ ]*,[ ]*/', trim(get_option('am_files_to_exclude')));
+
 		//Detects all js and css added to WordPress and removes their inclusion
 		if( get_option('am_compress_styles', 1) )
 			add_action( 'wp_print_styles',  array( $this, 'extractStyles' ) );
@@ -136,6 +140,20 @@ class AssetsMinifyInit {
 	}
 
 	/**
+	 * Checks if the file is within the list of "to exclude" resources
+	 *
+	 * @param string $path The file path
+	 * @return boolean Whether the file is to exclude or not
+	 */
+	protected function isFileExcluded( $path ) {
+		$filename = explode('/', $path);
+		if ( in_array($filename[ count($filename) - 1 ], $this->exclusions) )
+			return true;
+
+		return false;
+	}
+
+	/**
 	 * Takes all the scripts enqueued to the theme and removes them from the queue
 	 */
 	public function extractScripts() {
@@ -149,10 +167,13 @@ class AssetsMinifyInit {
 
 		foreach( $wp_scripts->to_do as $key => $handle ) {
 
+			if ( $this->isFileExcluded($wp_scripts->registered[$handle]->src) )
+				continue;
+
 			$script_path = $this->guessPath($wp_scripts->registered[$handle]->src);
 
 			// Script didn't match any case (plugin, theme or wordpress locations)
-			if( false === $script_path )
+			if( $script_path === false )
 				continue;
 
 			$where = 'footer';
@@ -199,11 +220,15 @@ class AssetsMinifyInit {
 		$wp_styles->all_deps($wp_styles->queue);
 
 		foreach( $wp_styles->to_do as $key => $handle ) {
+
+			if ( $this->isFileExcluded($wp_styles->registered[$handle]->src) )
+				continue;
+
 			//Removes absolute part of the path if it's specified in the src
 			$style_path = $this->guessPath($wp_styles->registered[$handle]->src);
 
 			// Script didn't match any case (plugin, theme or wordpress locations)
-			if( false == $style_path )
+			if( $style_path == false )
 				continue;
 
 			if ( !file_exists($style_path) )
