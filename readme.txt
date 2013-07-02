@@ -51,6 +51,13 @@ PHP 5.3+
 
 == Changelog ==
 
+= 1.2.0 =
+
+* Check which scripts/styles you want to exclude from minification [todo]
+* CoffeeScript compatibility [todo]
+* New updates for better compatibility with other plugins
+* Better check for background images within stylesheets minified
+
 = 1.1.4 =
 
 * Provided compatibility on SSL for https resources inclusion

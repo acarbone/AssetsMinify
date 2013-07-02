@@ -10,6 +10,7 @@ use Assetic\Filter\JSMinFilter;
 use Assetic\Filter\CssMinFilter;
 use Assetic\Filter\CssRewriteFilter;
 use Assetic\Filter\ScssphpFilter;
+use Assetic\Filter\CoffeeScriptFilter;
 use Assetic\Filter\CompassFilter;
 use Assetic\Filter\LessphpFilter;
 use Assetic\Cache\FilesystemCache;
@@ -40,6 +41,9 @@ class AssetsMinifyInit {
 
 	protected $scripts      = array( 'header' => array(), 'footer' => array() );
 	protected $mTimes       = array( 'header' => array(), 'footer' => array() );
+
+	protected $coffee       = array( 'header' => array(), 'footer' => array() );
+	protected $mTimesCoffee = array( 'header' => array(), 'footer' => array() );
 
 	protected $jsMin        = 'JSMin';
 	protected $cssMin       = 'CssMin';
@@ -160,8 +164,16 @@ class AssetsMinifyInit {
 			if ( empty($script_path) || !is_file($script_path) )
 				continue;
 
-			$this->scripts[ $where ][ $handle ] = $script_path;
-			$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
+			//Separation between css-frameworks stylesheets and .css stylesheets
+			$ext = substr( $script_path, -7 );
+
+			if ( $ext === '.coffee' ) {
+				$this->coffee[ $where ][ $handle ] = $script_path;
+				$this->mTimesCoffee[ $where ][ $handle ]  = filemtime( $this->coffee[ $where ][ $handle ] );
+			} else {
+				$this->scripts[ $where ][ $handle ] = $script_path;
+				$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
+			}
 
 			//Removes scripts from the queue so this plugin will be
 			//responsible to include all the scripts except other domains ones.
@@ -194,27 +206,18 @@ class AssetsMinifyInit {
 			if( false == $style_path )
 				continue;
 
+			if ( !file_exists($style_path) )
+				continue;
+
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style_path, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-
-				if ( !file_exists($style_path) )
-					continue;
-
 				$this->sass[ $handle ]       = $style_path;
 				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
 			} elseif ( $ext == '.less' ) {
-
-				if ( !file_exists($style_path) )
-					continue;
-
 				$this->less[ $handle ]       = $style_path;
 				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
 			} else {
-
-				if ( !file_exists($style_path) )
-					continue;
-
 				$this->styles[ $handle ]       = $style_path;
 				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
 			}
@@ -254,6 +257,9 @@ class AssetsMinifyInit {
 			//Prints css inclusion in the page
 			$this->dumpCss( "head-{$mtime}.css" );
 		}
+
+		//Manages the scripts from CoffeeScript to be printed in the header
+		$this->generateCoffee('header');
 
 		//Manages the scripts to be printed in the header
 		$this->headerServeScripts();
@@ -357,9 +363,35 @@ class AssetsMinifyInit {
 	}
 
 	/**
+	 * Returns coffeescript inclusions for JS (if provided)
+	 */
+	public function generateCoffee( $type ) {
+		if ( empty($this->coffee[$type]) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimesCoffee[$type]) . implode('&', $this->coffee[$type]) );
+
+		//Saves the asseticized header scripts
+		if ( !$this->cache->has( "{$type}-cs-{$mtime}.js" ) ) {
+			$this->js->getFilterManager()->set('CoffeeScriptFilter', new CoffeeScriptFilter);
+			$this->cache->set( "{$type}-cs-{$mtime}.js", $this->js->createAsset( $this->coffee[$type], array($this->jsMin, 'CoffeeScriptFilter') )->dump() );
+		}
+
+
+		//Adds Coffeescript compiled stylesheet to normal js queue
+		$script = $this->assetsPath . "{$type}-cs-{$mtime}.js";
+		$this->scripts[$type][]= $script;
+		$this->mTimes[$type][]= filemtime($script);
+	}
+
+	/**
 	 * Returns footer's inclusion for JS (if provided)
 	 */
 	public function footerServe() {
+
+		//Manages the scripts from CoffeeScript to be printed in the footer
+		$this->generateCoffee('footer');
+
 		if ( empty($this->scripts['footer']) )
 			return false;
 
