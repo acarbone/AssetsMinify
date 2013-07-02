@@ -3,12 +3,12 @@ Contributors: ale.carbo
 Donate link: 
 Tags: assets, minify, css, js, less, sass, compass
 Requires at least: 3.3
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Stable tag: 1.1.4
 
-Use Compass, SASS and LESS to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
+Use Compass, SASS, LESS and CoffeeScript (NEW) to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
 
 == Description ==
 
@@ -53,7 +53,7 @@ PHP 5.3+
 
 = 1.2.0 =
 
-* Check which scripts/styles you want to exclude from minification [todo]
+* Check which resources you want to exclude from minification
 * CoffeeScript compatibility
 * New updates for better compatibility with other plugins
 * Better check for background images within stylesheets minified

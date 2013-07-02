@@ -1,7 +1,7 @@
 AssetsMinify
 ============
 
-AssetsMinify is a [WordPress plugin](http://wordpress.org/extend/plugins/assetsminify/) based on [Assetic library](https://github.com/kriswallsmith/assetic) to let using Compass, SASS and LESS for developing themes and for minifying JS and CSS resources.
+AssetsMinify is a [WordPress plugin](http://wordpress.org/extend/plugins/assetsminify/) based on [Assetic library](https://github.com/kriswallsmith/assetic) to let using Compass, SASS, LESS and CoffeeScript for developing themes and for minifying JS and CSS resources.
 
 
 Why use it
@@ -34,7 +34,7 @@ This will work! AssetsMinify will compile 'em all and will combine them in a sin
 <?php
 wp_enqueue_script( 'script1', get_template_directory_uri() . '/js/script1.js', array(), '1.0', false );
 wp_enqueue_script( 'script2', get_template_directory_uri() . '/js/script2.js', array(), '1.0', true );
-wp_enqueue_script( 'script3', get_template_directory_uri() . '/js/script3.js', array(), '1.0', true );
+wp_enqueue_script( 'script3', get_template_directory_uri() . '/js/script3.coffee', array(), '1.0', true );
 wp_enqueue_script( 'script4', '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', array(), '1.0', true );
 ```
 AssetsMinify detects which are the scripts that would go within the `<head>` ( in the previous sample only script1 ) and which would go before `</body>` ( script2 and script3 ).

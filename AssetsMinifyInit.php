@@ -377,7 +377,7 @@ class AssetsMinifyInit {
 
 		//Saves the asseticized header scripts
 		if ( !$this->cache->has( "{$type}-cs-{$mtime}.js" ) ) {
-			$this->js->getFilterManager()->set('CoffeeScriptFilter', new CoffeeScriptFilter);
+			$this->js->getFilterManager()->set('CoffeeScriptFilter', new CoffeeScriptFilter( get_option('am_coffeescript_path', '/usr/bin/coffee') ));
 			$this->cache->set( "{$type}-cs-{$mtime}.js", $this->js->createAsset( $this->coffee[$type], array($this->jsMin, 'CoffeeScriptFilter') )->dump() );
 		}
 
