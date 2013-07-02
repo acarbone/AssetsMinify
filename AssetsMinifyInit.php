@@ -121,15 +121,15 @@ class AssetsMinifyInit {
 		$file_path = false;
 
 		// Script is enqueued from a plugin
-		if( false !== strpos($file_url, WP_PLUGIN_URL) )
+		if( strpos($file_url, WP_PLUGIN_URL) !== false )
 			$file_path = WP_PLUGIN_DIR . str_replace(WP_PLUGIN_URL, '', $file_url);
 
 		// Script is enqueued from a theme
-		if( false !== strpos($file_url, WP_CONTENT_URL) )
+		if( strpos($file_url, WP_CONTENT_URL) !== false )
 			$file_path = WP_CONTENT_DIR . str_replace(WP_CONTENT_URL, '', $file_url);
 
 		// Script is enqueued from wordpress
-		if( false !== strpos($file_url,  WPINC) )
+		if( strpos($file_url,  WPINC) !== false )
 			$file_path = untrailingslashit(ABSPATH) . $file_url;
 
 		return $file_path;
@@ -298,7 +298,6 @@ class AssetsMinifyInit {
 		//Adds SASS compiled stylesheet to normal css queue
 		$this->styles['sass-am-generated']       = $this->assetsPath . "sass-{$mtime}.css";
 		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
-
 	}
 
 	/**
@@ -322,7 +321,6 @@ class AssetsMinifyInit {
 		//Adds LESS compiled stylesheet to normal css queue
 		$this->styles['less-am-generated']       = $this->assetsPath . "less-{$mtime}.css";
 		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
-
 	}
 
 	/**
@@ -341,25 +339,6 @@ class AssetsMinifyInit {
 		//Adds CSS compiled stylesheet to normal css queue
 		$this->styles       = array( 'styles-am-generated' => $this->assetsPath . "styles-{$mtime}.css");
 		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['styles-am-generated']) );
-
-	}
-
-	/**
-	 * Returns header's inclusion for JS (if provided)
-	 */
-	public function headerServeScripts() {
-		if ( empty($this->scripts['header']) )
-			return false;
-
-		$mtime = md5(implode('&', $this->mTimes['header']) . implode('&', $this->scripts['header']) );
-
-		//Saves the asseticized header scripts
-		if ( !$this->cache->has( "head-{$mtime}.js" ) )
-			$this->cache->set( "head-{$mtime}.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
-
-		//Prints <script> inclusion in the page
-		$this->dumpScriptData( 'header' );
-		$this->dumpJs( "head-{$mtime}.js", false );
 	}
 
 	/**
@@ -382,6 +361,24 @@ class AssetsMinifyInit {
 		$script = $this->assetsPath . "{$type}-cs-{$mtime}.js";
 		$this->scripts[$type][]= $script;
 		$this->mTimes[$type][]= filemtime($script);
+	}
+
+	/**
+	 * Returns header's inclusion for JS (if provided)
+	 */
+	public function headerServeScripts() {
+		if ( empty($this->scripts['header']) )
+			return false;
+
+		$mtime = md5(implode('&', $this->mTimes['header']) . implode('&', $this->scripts['header']) );
+
+		//Saves the asseticized header scripts
+		if ( !$this->cache->has( "head-{$mtime}.js" ) )
+			$this->cache->set( "head-{$mtime}.js", $this->js->createAsset( $this->scripts['header'], $this->jsFilters )->dump() );
+
+		//Prints <script> inclusion in the page
+		$this->dumpScriptData( 'header' );
+		$this->dumpJs( "head-{$mtime}.js", false );
 	}
 
 	/**
