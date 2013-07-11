@@ -279,6 +279,8 @@ class AssetsMinifyInit {
 			if ( !$this->cache->has( "head-{$mtime}.css" ) ) {
 				$cssDump = str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
 				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
+				$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
+				$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
 				$this->cache->set( "head-{$mtime}.css", $cssDump );
 			}
 
