@@ -129,10 +129,7 @@ class AMInitTests extends WP_UnitTestCase {
 
 		wp_enqueue_script( 'twentytwelve-navigation', get_template_directory_uri() . '/js/navigation.js', array( 'jquery' ), '1.0', true );
 
-		$cwd = getcwd();
-		chdir( ABSPATH );
 		$this->plugin->extractScripts();
-		chdir( $cwd );
 
 		$this->assertContains( 'jquery', array_keys( $wp_scripts->done ) );
 	}
@@ -143,10 +140,7 @@ class AMInitTests extends WP_UnitTestCase {
 		wp_register_style( 'twentytwelve-style', get_stylesheet_uri() );
 		wp_enqueue_style( 'twentytwelve-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentytwelve-style' ), '20121010' );
 
-		$cwd = getcwd();
-		chdir( ABSPATH );
 		$this->plugin->extractStyles();
-		chdir( $cwd );
 
 		$this->assertContains( 'twentytwelve-style', array_keys( $wp_styles->done ) );
 	}
