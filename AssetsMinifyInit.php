@@ -276,8 +276,11 @@ class AssetsMinifyInit {
 			$mtime = md5(implode('&', $this->mTimesStyles));
 
 			//Saves the asseticized stylesheets
-			if ( !$this->cache->has( "head-{$mtime}.css" ) )
-				$this->cache->set( "head-{$mtime}.css", str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() ) );
+			if ( !$this->cache->has( "head-{$mtime}.css" ) ) {
+				$cssDump = str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
+				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
+				$this->cache->set( "head-{$mtime}.css", $cssDump );
+			}
 
 			//Prints css inclusion in the page
 			$this->dumpCss( "head-{$mtime}.css" );
@@ -308,7 +311,7 @@ class AssetsMinifyInit {
 				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
 				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
 				$compassInstance->setGeneratedImagesPath( $this->assetsPath );
-				$compassInstance->setHttpGeneratedImagesPath( str_replace( ABSPATH, '', $this->assetsPath ) );
+				$compassInstance->setHttpGeneratedImagesPath( site_url() . str_replace( getcwd(), '', $this->assetsPath ) );
 				$this->css->getFilterManager()->set('Compass', $compassInstance);
 				$filter = 'Compass';
 			} else {
