@@ -1,12 +1,12 @@
 === AssetsMinify ===
 Contributors: ale.carbo
 Donate link: 
-Tags: assets, minify, css, js, less, sass, compass
+Tags: assets, minify, css, js, less, sass, compass, coffeescript
 Requires at least: 3.3
 Tested up to: 3.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 
 Use Compass, SASS, LESS and CoffeeScript (NEW) to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
 
@@ -23,6 +23,12 @@ AssetsMinify is based on Assetic library.
 This plugin has been tested up to WordPress 3.6 beta.
 
 [Fork me on Github](https://github.com/acarbone/AssetsMinify).
+
+= CoffeeScript (NEW FEATURE) =
+
+Now you can also include your CoffeeScript directly using wp_enqueue_script:
+
+`wp_enqueue_script( 'my-cs', get_template_directory_uri() . '/coffee/header.coffee', array(), '1.0' );`
 
 = Define inclusion-sets per-page =
 
@@ -50,6 +56,10 @@ PHP 5.3+
 3. Set 777 permissions to you uploads directory
 
 == Changelog ==
+
+= 1.2.1 =
+
+* Fixed bug of incorrect resources' inclusion path for subdirectory WordPress installations
 
 = 1.2.0 =
 
