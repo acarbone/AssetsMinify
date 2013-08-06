@@ -49,6 +49,22 @@
                 </tr>
                 <tr valign="top">
                     <th scope="row">
+                        <label for="am_minify_styles">Minify styles</label>
+                    </th>
+                    <td>
+                        <input name="am_minify_styles" type="checkbox" id="am_minify_styles" value="1" <?php checked(1, get_option('am_minify_styles', 1)); ?>>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        <label for="am_minify_scripts">Minify scripts</label>
+                    </th>
+                    <td>
+                        <input name="am_minify_scripts" type="checkbox" id="am_minify_scripts" value="1" <?php checked(1, get_option('am_minify_scripts', 1)); ?>>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
                         <label for="am_files_to_exclude">Resources to exclude</label>
                     </th>
                     <td>

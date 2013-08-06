@@ -66,13 +66,17 @@ class AssetsMinifyInit {
 		$this->css->setFilterManager( new FilterManager );
 
 		//Defines filter for js minify
-		$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
-		$this->jsFilters []= $this->jsMin;
+		if (get_option('am_minify_scripts')) {
+			$this->js->getFilterManager()->set($this->jsMin, new JSMinFilter);
+			$this->jsFilters []= $this->jsMin;
+		}
 
 		//Defines filter for css minify
-		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
 		$this->css->getFilterManager()->set('CssRewrite', new CssRewriteFilter);
-		$this->cssFilters []= $this->cssMin;
+		if (get_option('am_minify_styles')) {
+			$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
+			$this->cssFilters []= $this->cssMin;
+		}
 
 		//Define assets path to save asseticized files
 		$uploadsDir = wp_upload_dir();
