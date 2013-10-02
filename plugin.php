@@ -10,7 +10,7 @@ Author URI: http://www.artera.it
 
 //Autoloader
 function amAutoloader( $classname ) {
-	$filename = str_replace("\\", "/", __DIR__ . "/lib/$classname.php");
+	$filename = str_replace("\\", "/", dirname(__FILE__) . "/lib/$classname.php");
 
 	if ( file_exists( $filename ) )
 		include_once $filename;
