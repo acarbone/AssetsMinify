@@ -1,9 +1,9 @@
 === AssetsMinify ===
 Contributors: ale.carbo
-Donate link: 
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=USTVFTWRP6DGW
 Tags: assets, minify, css, js, less, sass, compass, coffeescript
 Requires at least: 3.3
-Tested up to: 3.5.2
+Tested up to: 3.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Stable tag: 1.2.1
@@ -48,6 +48,9 @@ Although it is not a best practice you can define resources inclusions basing on
 
 PHP 5.3+
 
+= How can I exclude only certain resources from minification? =
+
+You can fill in the text field "Resources to exclude" within the admin page of the plugin using the filename of the resource. For example: script.js (not the whole path).
 
 == Screenshots ==
 
