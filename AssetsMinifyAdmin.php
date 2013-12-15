@@ -36,6 +36,7 @@ class AssetsMinifyAdmin {
 		register_setting('am_options_group', 'am_use_compass');
 		register_setting('am_options_group', 'am_compass_path');
 		register_setting('am_options_group', 'am_coffeescript_path');
+		register_setting('am_options_group', 'am_async_flag');
 		register_setting('am_options_group', 'am_compress_styles');
 		register_setting('am_options_group', 'am_compress_scripts');
 		register_setting('am_options_group', 'am_files_to_exclude');

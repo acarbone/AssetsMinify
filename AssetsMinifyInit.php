@@ -430,7 +430,11 @@ class AssetsMinifyInit {
 
 		//Prints <script> inclusion in the page
 		$this->dumpScriptData( 'footer' );
-		$this->dumpJs( "foot-{$mtime}.js" );
+
+		$async = false;
+		if( get_option('am_async_flag', 1) )
+			$async = true;
+		$this->dumpJs( "foot-{$mtime}.js", $async );
 	}
 
 	/**
