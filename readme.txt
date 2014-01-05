@@ -3,10 +3,10 @@ Contributors: ale.carbo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=USTVFTWRP6DGW
 Tags: assets, minify, css, js, less, sass, compass, coffeescript
 Requires at least: 3.3
-Tested up to: 3.7.1
+Tested up to: 3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 
 Use Compass, SASS, LESS and CoffeeScript (NEW) to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
 
@@ -59,6 +59,12 @@ You can fill in the text field "Resources to exclude" within the admin page of t
 3. Set 777 permissions to you uploads directory
 
 == Changelog ==
+
+= 1.2.2 =
+
+* Better instructions on AssetsMinify's admin panel
+* Defined optional async attribute setting within admin panel
+* Check for WordPress 3.8 compatibility
 
 = 1.2.1 =
 
