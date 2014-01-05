@@ -106,7 +106,12 @@ class AssetsMinifyInit {
 	 */
 	public function gc() {
 		update_option( 'am_last_gc', time() );
-		foreach ( glob("{$this->assetsPath}*.*") as $filepath )
+
+		$files = glob("{$this->assetsPath}*.*");
+		if ( $files === false )
+			return false;
+
+		foreach ( $files  as $filepath )
 			if ( filemtime($filepath) <= time() - 864000 ) //If the file is older than 10 days then is removed
 				unlink($filepath);
 	}
