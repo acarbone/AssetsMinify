@@ -184,7 +184,7 @@ class AssetsMinifyInit {
 			$where = 'footer';
 			//Unfortunately not every WP plugin developer is a JS ninja
 			//So... let's put it in the header.
-			if ( empty($wp_scripts->registered[$handle]->extra) )
+			if ( empty($wp_scripts->registered[$handle]->extra) && empty($wp_scripts->registered[$handle]->args) )
 				$where = 'header';
 
 			if ( empty($script_path) || !is_file($script_path) )
