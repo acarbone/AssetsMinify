@@ -128,14 +128,16 @@ class AssetsMinifyInit {
 			return false;
 
 		$file_path = false;
+		$wp_plugin_url = plugins_url();
+		$wp_content_url = content_url();
 
 		// Script is enqueued from a plugin
-		if( strpos($file_url, WP_PLUGIN_URL) !== false )
-			$file_path = WP_PLUGIN_DIR . str_replace(WP_PLUGIN_URL, '', $file_url);
+		if( strpos($file_url, $wp_plugin_url) !== false )
+			$file_path = WP_PLUGIN_DIR . str_replace($wp_plugin_url, '', $file_url);
 
 		// Script is enqueued from a theme
-		if( strpos($file_url, WP_CONTENT_URL) !== false )
-			$file_path = WP_CONTENT_DIR . str_replace(WP_CONTENT_URL, '', $file_url);
+		if( strpos($file_url, $wp_content_url) !== false )
+			$file_path = WP_CONTENT_DIR . str_replace($wp_content_url, '', $file_url);
 
 		// Script is enqueued from wordpress
 		if( strpos($file_url,  WPINC) !== false )
