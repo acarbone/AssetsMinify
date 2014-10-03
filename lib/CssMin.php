@@ -465,7 +465,7 @@ class CssWhitesmithsFormatter extends aCssFormatter
 				}
 			elseif ($class === "CssAtKeyframesStartToken")
 				{
-				$r[] = $indent . "@keyframes \"" . $token->Name . "\"";
+				$r[] = $indent . "@keyframes " . $token->Name . "";
 				$r[] = $this->indent . $indent . "{";
 				$level++;
 				}
@@ -1840,7 +1840,8 @@ class CssOtbsFormatter extends aCssFormatter
 				}
 			elseif ($class === "CssAtKeyframesStartToken")
 				{
-				$r[] = $indent . "@keyframes \"" . $token->Name . "\" {";
+				//$r[] = $indent . "@keyframes \"" . $token->Name . "\" {";
+				$r[] = $indent . "@keyframes " . $token->Name . " {";
 				$level++;
 				}
 			elseif ($class === "CssAtMediaStartToken")
@@ -3325,7 +3326,7 @@ class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter
 	public function apply(array &$tokens)
 		{
 		$r = 0;
-		$transformations = array("-moz-keyframes", "-webkit-keyframes");
+		$transformations = array("-moz-keyframes", "-webkit-keyframes", "-o-keyframes", "-ms-keyframes");
 		for ($i = 0, $l = count($tokens); $i < $l; $i++)
 			{
 			if (get_class($tokens[$i]) === "CssAtKeyframesStartToken")
@@ -4435,7 +4436,8 @@ class CssAtKeyframesStartToken extends aCssAtBlockStartToken
 	 */
 	public function __toString()
 		{
-		return "@" . $this->AtRuleName . " \"" . $this->Name . "\"{";
+		//return "@" . $this->AtRuleName . " \"" . $this->Name . "\"{";
+			return "@" . $this->AtRuleName . " " . $this->Name . "{";
 		}
 	}
 
@@ -4574,6 +4576,22 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin
 			$this->parser->clearBuffer();
 			return $index + 15;
 			}
+		// Start of @keyframes at-rule block (@-ms-keyframes)
+		else if ($char === "@" && $state === "T_DOCUMENT" && strtolower(substr($this->parser->getSource(), $index, 14)) === "@-ms-keyframes")
+	        {
+			$this->atRuleName = "-ms-keyframes";
+			$this->parser->pushState("T_AT_KEYFRAMES::NAME");
+			$this->parser->clearBuffer();
+			return $index + 14;
+			}
+		// Start of @keyframes at-rule block (@-o-keyframes)
+		else if ($char === "@" && $state === "T_DOCUMENT" && strtolower(substr($this->parser->getSource(), $index, 13)) === "@-o-keyframes")
+			{
+			$this->atRuleName = "-o-keyframes";
+			$this->parser->pushState("T_AT_KEYFRAMES::NAME");
+			$this->parser->clearBuffer();
+			return $index + 13;
+			}						
 		// Start of @keyframes at-rule block (@-webkit-keyframes)
 		elseif ($char === "@" && $state === "T_DOCUMENT" && strtolower(substr($this->parser->getSource(), $index, 18)) === "@-webkit-keyframes")
 			{
