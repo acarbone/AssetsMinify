@@ -1840,7 +1840,6 @@ class CssOtbsFormatter extends aCssFormatter
 				}
 			elseif ($class === "CssAtKeyframesStartToken")
 				{
-				//$r[] = $indent . "@keyframes \"" . $token->Name . "\" {";
 				$r[] = $indent . "@keyframes " . $token->Name . " {";
 				$level++;
 				}
@@ -4436,7 +4435,6 @@ class CssAtKeyframesStartToken extends aCssAtBlockStartToken
 	 */
 	public function __toString()
 		{
-		//return "@" . $this->AtRuleName . " \"" . $this->Name . "\"{";
 			return "@" . $this->AtRuleName . " " . $this->Name . "{";
 		}
 	}
