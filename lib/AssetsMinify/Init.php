@@ -1,7 +1,5 @@
 <?php
-/**
- * @package Assets Minify
- */
+namespace AssetsMinify;
 
 use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
@@ -19,7 +17,7 @@ use Assetic\Asset\StringAsset;
 /**
  * Class that holds plugin's logic.
  */
-class AssetsMinifyInit {
+class Init {
 
 	public $js;
 	public $css;
@@ -508,5 +506,3 @@ class AssetsMinifyInit {
 		echo "</script>\n";
 	}
 }
-
-new AssetsMinifyInit;

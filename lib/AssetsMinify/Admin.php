@@ -1,12 +1,7 @@
 <?php
-/**
- * @package Assets Minify
- */
+namespace AssetsMinify;
 
-/**
- * Class that holds admin functionalities for AssetsMinify
- */
-class AssetsMinifyAdmin {
+class Admin {
 
 	public function __construct() {
 		add_action('admin_init', array( $this, 'options') );
@@ -29,7 +24,7 @@ class AssetsMinifyAdmin {
 	}
 
 	protected function tpl( $tplFile ) {
-		include plugin_dir_path( __FILE__ ) . 'templates/' . $tplFile;
+		include plugin_dir_path( dirname(dirname(__FILE__)) ) . 'templates/' . $tplFile;
 	}
 
 	public function options() {
@@ -49,7 +44,3 @@ class AssetsMinifyAdmin {
 		$this->tpl( "settings.phtml" );
 	}
 }
-function amPluginsLoaded() {
-	return new AssetsMinifyAdmin;	
-}
-add_action( 'plugins_loaded', 'amPluginsLoaded' );

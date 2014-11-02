@@ -7,18 +7,6 @@ Author: Alessandro Carbone
 Version: 1.2.3
 Author URI: http://www.artera.it
 */
+require 'vendor/autoload.php';
 
-//Autoloader
-function amAutoloader( $classname ) {
-	$filename = str_replace("\\", "/", __DIR__ . "/lib/$classname.php");
-
-	if ( file_exists( $filename ) )
-		include_once $filename;
-}
-spl_autoload_register('amAutoloader');
-
-//Start
-if ( !is_admin() )
-	require_once 'AssetsMinifyInit.php';
-else
-	require_once 'AssetsMinifyAdmin.php';
+AssetsMinify::bootstrap();
