@@ -128,14 +128,17 @@ class AssetsMinifyInit {
 			return false;
 
 		$file_path = false;
+		$wp_plugin_url = plugins_url();
+		$wp_content_url = content_url();
 
 		// Script is enqueued from a plugin
-		$url_regex = $this->getUrlRegex(WP_PLUGIN_URL);
+
+		$url_regex = $this->getUrlRegex($wp_plugin_url);
 		if( preg_match($url_regex, $file_url) > 0 )
 			$file_path = WP_PLUGIN_DIR . preg_replace($url_regex, '', $file_url);
 
 		// Script is enqueued from a theme
-		$url_regex = $this->getUrlRegex(WP_CONTENT_URL);
+		$url_regex = $this->getUrlRegex($wp_content_url);
 		if( preg_match($url_regex, $file_url) > 0 )
 			$file_path = WP_CONTENT_DIR . preg_replace($url_regex, '', $file_url);
 
