@@ -1,4 +1,8 @@
 <?php
+/**
+ * Bootstrap class for AssetsMinify plugin.
+ * It's the only entry point of this plugin.
+ */
 class AssetsMinify {
 	protected static $instance;
 
