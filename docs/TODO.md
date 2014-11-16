@@ -5,7 +5,7 @@ This is the only one todo list for the *dev branch*.
 
 The *dev branch* is responsible for all new features and code refactoring and re-organization on AssetsMinify.
 
-The next version could be 2.0.0 or 1.3.0 depending on the features released.
+The next version released will be 2.0.0.
 
 
 Todo
