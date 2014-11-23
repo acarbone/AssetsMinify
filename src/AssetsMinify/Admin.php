@@ -3,16 +3,31 @@ namespace AssetsMinify;
 
 class Admin {
 
+	protected $options = array(
+		'am_use_compass',
+		'am_compass_path',
+		'am_coffeescript_path',
+		'am_async_flag',
+		'am_compress_styles',
+		'am_compress_scripts',
+		'am_files_to_exclude',
+	);
+
 	public function __construct() {
 		add_action('admin_init', array( $this, 'options') );
 		add_action('admin_menu', array( $this, 'menu') );
 
 		if ( isset($_GET['empty_cache']) ) {
-			$uploadsDir = wp_upload_dir();
-			$filesList = glob($uploadsDir['basedir'] . '/am_assets/' . "*.*");
-			if ( $filesList !== false )
-				array_map('unlink', $filesList);
+			$this->emptyCache();
 			wp_redirect( admin_url( "options-general.php?page=assets-minify" ) );
+		}
+	}
+
+	public function emptyCache() {
+		$uploadsDir = wp_upload_dir();
+		$filesList = glob($uploadsDir['basedir'] . '/am_assets/' . "*.*");
+		if ( $filesList !== false ) {
+			array_map('unlink', $filesList);
 		}
 	}
 
@@ -28,13 +43,10 @@ class Admin {
 	}
 
 	public function options() {
-		register_setting('am_options_group', 'am_use_compass');
-		register_setting('am_options_group', 'am_compass_path');
-		register_setting('am_options_group', 'am_coffeescript_path');
-		register_setting('am_options_group', 'am_async_flag');
-		register_setting('am_options_group', 'am_compress_styles');
-		register_setting('am_options_group', 'am_compress_scripts');
-		register_setting('am_options_group', 'am_files_to_exclude');
+		foreach ( $this->options as $opt ) {
+			register_setting('am_options_group', $opt);
+		}
+		return $this->options;
 	}
 
 	/**
