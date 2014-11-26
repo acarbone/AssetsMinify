@@ -5,7 +5,7 @@ use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
 use Assetic\FilterManager;
 use Assetic\Filter\JSMinFilter;
-use Assetic\Filter\CssMinFilter;
+use Assetic\Filter\MinifyCssCompressorFilter;
 use Assetic\Filter\CssRewriteFilter;
 use Assetic\Filter\ScssphpFilter;
 use Assetic\Filter\CoffeeScriptFilter;
@@ -13,6 +13,8 @@ use Assetic\Filter\CompassFilter;
 use Assetic\Filter\LessphpFilter;
 use Assetic\Cache\FilesystemCache;
 use Assetic\Asset\StringAsset;
+
+use Minify_CSSmin;
 
 /**
  * Class that holds plugin's logic.
@@ -68,7 +70,7 @@ class Init {
 		$this->jsFilters []= $this->jsMin;
 
 		//Defines filter for css minify
-		$this->css->getFilterManager()->set($this->cssMin, new CssMinFilter);
+		$this->css->getFilterManager()->set($this->cssMin, new MinifyCssCompressorFilter);
 		$this->css->getFilterManager()->set('CssRewrite', new CssRewriteFilter);
 		$this->cssFilters []= $this->cssMin;
 

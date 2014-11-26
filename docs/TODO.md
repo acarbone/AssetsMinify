@@ -14,7 +14,6 @@ Todo
 ### Re-organization
 
 - Rewrite unit-tests and write code using TDD
-- Manage Jenkins CI integration
 - Reorganize the Init class to be splitted in more classes
 
 ### Bugfix
@@ -43,3 +42,4 @@ Done
 -------------
 
 - Dependency management with composer for external libraries
+- Manage Travis CI integration

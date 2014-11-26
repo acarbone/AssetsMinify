@@ -16,6 +16,7 @@
 		"leafo/scssphp": "dev-master",
 		"ptachoire/cssembed": "dev-master",
 		"leafo/scssphp-compass": "dev-master",
-		"patchwork/jsqueeze": "dev-master"
+		"patchwork/jsqueeze": "dev-master",
+		"mrclay/minify": "dev-master"
 	}
 }
