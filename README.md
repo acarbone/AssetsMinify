@@ -1,6 +1,8 @@
 AssetsMinify
 ============
 
+[![Build Status](https://travis-ci.org/acarbone/AssetsMinify.svg?branch=dev)](https://travis-ci.org/acarbone/AssetsMinify)
+
 AssetsMinify is a [WordPress plugin](http://wordpress.org/extend/plugins/assetsminify/) based on [Assetic library](https://github.com/kriswallsmith/assetic) to let using Compass, SASS, LESS and CoffeeScript for developing themes and for minifying JS and CSS resources.
 
 
