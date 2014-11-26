@@ -12,7 +12,7 @@ class AdminTest extends WP_UnitTestCase {
 		ob_start();
 		$this->admin->settings();
 		$settingsTpl = ob_get_clean();
-		$this->assertContains( "<input type='hidden' name='option_page' value='am_option_group' />", $settingsTpl );
+		$this->assertContains( "<input type='hidden' name='option_page' value='am_optionsa_group' />", $settingsTpl );
 	}
 
 	public function testOptions() {
