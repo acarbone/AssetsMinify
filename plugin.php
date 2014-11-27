@@ -9,4 +9,4 @@ Author URI: http://www.artera.it
 */
 require 'vendor/autoload.php';
 
-AssetsMinify::bootstrap();
+AssetsMinify::getInstance();

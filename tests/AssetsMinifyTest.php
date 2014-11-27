@@ -1,10 +1,10 @@
 <?php
 class AssetsMinifyTest extends WP_UnitTestCase {
 	public function testInit() {
-		$plugin = AssetsMinify::bootstrap();
+		$plugin = AssetsMinify::getInstance();
 		$this->assertTrue( $plugin instanceof AssetsMinify );
 
-		$singleton = AssetsMinify::bootstrap();
+		$singleton = AssetsMinify::getInstance();
 		$this->assertTrue( $singleton == $plugin );
 	}
 }
