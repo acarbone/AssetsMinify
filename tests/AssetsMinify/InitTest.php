@@ -13,7 +13,7 @@ class InitTest extends WP_UnitTestCase {
 	}
 
 	public function testGC() {
-		$this->assertFalse(null == $this->plugin->gc);
-		$this->assertInstanceOf('AssetsMinify\Cache\GarbageCollector', $this->plugin->gc);
+		$this->assertFalse(null == $this->plugin->cache);
+		$this->assertInstanceOf('AssetsMinify\Cache', $this->plugin->cache);
 	}
 }

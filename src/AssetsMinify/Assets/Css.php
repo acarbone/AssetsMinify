@@ -6,9 +6,13 @@ use Assetic\Filter\CssRewriteFilter;
 
 class Css extends Factory {
 
+	protected $assets = array(),
+			  $styles = array(),
+			  $mtimes = array();
+
 	public function setFilters() {
-		$this->asset->setFilter('CssMin', new MinifyCssCompressorFilter)
-				  ->setFilter('CssRewrite', new CssRewriteFilter);
+		$this->setFilter('CssMin', new MinifyCssCompressorFilter)
+			 ->setFilter('CssRewrite', new CssRewriteFilter);
 	}
 
 	/**
@@ -39,17 +43,14 @@ class Css extends Factory {
 				continue;
 
 			//Separation between css-frameworks stylesheets and .css stylesheets
-			$ext = substr( $style_path, -5 );
-			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-				$this->sass[ $handle ]       = $style_path;
-				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
-			} elseif ( $ext == '.less' ) {
-				$this->less[ $handle ]       = $style_path;
-				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
-			} else {
-				$this->styles[ $handle ]       = $style_path;
-				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
+			$ext = 'css';
+			$parts = explode('.', $style_path);
+			if ( count($parts) > 0 ) {
+				$ext = $parts[ count($parts) - 1 ];
 			}
+
+			$this->assets[$ext]['files'][$handle] = $style_path;
+			$this->assets[$ext]['mtimes'][$handle] = filemtime($style_path);
 
 			//Removes css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
@@ -59,5 +60,49 @@ class Css extends Factory {
 			$wp_styles->done[] = $handle;
 			unset($wp_styles->to_do[$key]);
 		}
+	}
+
+	/**
+	 * Takes all the SASS stylesheets and manages their queue to asseticize them
+	 */
+	public function generate() {
+		foreach ( $this->assets as $ext => $content ) {
+			$mtime = md5( json_encode($content) );
+			$cachefile = "$ext-$mtime.css";
+
+			if ( !$this->cache->fs->has( $cachefile ) ) {
+				$class = "AssetsMinify\\Assets\\Css\\" . ucfirst($ext);
+				new $class( $content['files'], $cachefile, $this );
+			}
+
+			$key = "$ext-am-generated";
+			$this->styles[$key] = $this->cache->getPath() . $cachefile;
+			$this->mtimes[$key] = filemtime($this->styles[$key]);
+		}
+
+		if ( empty($this->styles) )
+			return false;
+
+
+		$mtime = md5( json_encode($this->mtimes) );
+
+		//Saves the asseticized stylesheets
+		if ( !$this->cache->fs->has( "head-{$mtime}.css" ) ) {
+			$cssDump = str_replace('../', '/', $this->createAsset( $this->styles, $this->getFilters() )->dump() );
+			$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
+			$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
+			$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
+			$this->cache->fs->set( "head-{$mtime}.css", $cssDump );
+		}
+
+		//Prints css inclusion in the page
+		$this->dump( "head-{$mtime}.css" );
+	}
+
+	/**
+	 * Prints <link> tag to include the CSS
+	 */
+	protected function dump( $filename ) {
+		echo "<link href='" . $this->cache->getUrl() . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
 	}
 }

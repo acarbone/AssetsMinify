@@ -1,13 +1,12 @@
 <?php
 namespace AssetsMinify\Assets;
 
-use Assetic\Filter\MinifyCssCompressorFilter;
-use Assetic\Filter\CssRewriteFilter;
+use Assetic\Filter\JSMinFilter;
 
 class Js extends Factory {
 
 	public function setFilters() {
-		$this->asset->setFilter('JSMin', new JSMinFilter);
+		$this->setFilter('JSMin', new JSMinFilter);
 	}
 
 	/**

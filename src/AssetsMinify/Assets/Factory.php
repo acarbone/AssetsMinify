@@ -14,7 +14,10 @@ class Factory {
 		$this->asset = new AssetFactory( ABSPATH );
 		$this->asset->setAssetManager( new AssetManager );
 		$this->asset->setFilterManager( new FilterManager );
+		$this->setFilters();
 	}
+
+	public function setFilters() {}
 
 	public function createAsset( $name, $value ) {
 		return $this->asset->createAsset( $name, $value);
@@ -28,6 +31,10 @@ class Factory {
 
 	public function getFilters() {
 		return $this->filters;
+	}
+
+	public function setCache( $cache ) {
+		$this->cache = $cache;
 	}
 
 	/**
