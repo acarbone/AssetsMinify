@@ -6,6 +6,12 @@ use Assetic\Filter\CssRewriteFilter;
 
 //use Minify_CSSmin;
 
+/**
+ * Css Factory.
+ * Manages the styles (Css and sass, scss, stylus, less)
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
+ */
 class Css extends Factory {
 
 	protected $assets = array(),
@@ -65,7 +71,7 @@ class Css extends Factory {
 	}
 
 	/**
-	 * Takes all the SASS stylesheets and manages their queue to asseticize them
+	 * Takes all the stylesheets and manages their queue to compress them
 	 */
 	public function generate() {
 		foreach ( $this->assets as $ext => $content ) {
@@ -102,6 +108,8 @@ class Css extends Factory {
 
 	/**
 	 * Prints <link> tag to include the CSS
+	 * 
+	 * @param string $filename The filename to dump
 	 */
 	protected function dump( $filename ) {
 		echo "<link href='" . $this->cache->getUrl() . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";

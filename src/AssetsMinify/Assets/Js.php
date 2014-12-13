@@ -4,6 +4,12 @@ namespace AssetsMinify\Assets;
 use Assetic\Filter\JSMinFilter;
 use Assetic\Asset\StringAsset;
 
+/**
+ * Js Factory.
+ * Manages the scripts (JS and Coffeescript)
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
+ */
 class Js extends Factory {
 
 	protected $assets = array(),
@@ -65,7 +71,9 @@ class Js extends Factory {
 	}
 
 	/**
-	 * Takes all the JavaScripts and manages their queue to asseticize them
+	 * Takes all the JavaScript and manages the queue to compress them
+	 *
+	 * @param string $where The page's place to dump the scripts in (header or footer)
 	 */
 	public function generate($where) {
 		foreach ( $this->assets[$where] as $ext => $content ) {
@@ -102,6 +110,9 @@ class Js extends Factory {
 
 	/**
 	 * Prints <script> tag to include the JS
+	 *
+	 * @param string $filename The filename to dump
+	 * @param boolean $async Tells if the script is to include with async attribute (default=true)
 	 */
 	protected function dump( $filename, $async = true ) {
 		echo "<script type='text/javascript' src='" . $this->cache->getUrl() . $filename . "'" . ($async ? " async" : "") . "></script>";
@@ -109,6 +120,9 @@ class Js extends Factory {
 
 	/**
 	 * Combines the script data from all minified scripts
+	 *
+	 * @param string $where The page's place to dump the scripts in (header or footer)
+	 * @return string The script to include within the page
 	 */
 	protected function buildScriptData( $where ) {
 		global $wp_scripts;
@@ -128,6 +142,8 @@ class Js extends Factory {
 
 	/**
 	 * Prints <script> tags with addtional script data and i10n
+	 *
+	 * @param string $where The page's place to dump the scripts in (header or footer)
 	 */
 	protected function dumpScriptData( $where ) {
 		$data = $this->buildScriptData( $where );

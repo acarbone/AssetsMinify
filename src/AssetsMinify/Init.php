@@ -5,7 +5,10 @@ use AssetsMinify\Assets\Css;
 use AssetsMinify\Assets\Js;
 
 /**
- * Class that holds plugin's logic.
+ * Init is the entry point for frontend assets management in WordPress using AssetsMinify.
+ * It's the manager responsible for every object's instance.
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
 class Init {
 
@@ -15,11 +18,13 @@ class Init {
 	protected $exclusions;
 
 	/**
-	 * Constructor of the class
+	 * Constructor
 	 */
 	public function __construct() {
+		// Cache manager
 		$this->cache = new Cache;
 
+		// Assets managers for Js and Css
 		$this->js = new Js($this);
 		$this->css = new Css($this);
 
@@ -37,7 +42,7 @@ class Init {
 	}
 
 	/**
-	 * Checks if the file is within the list of "to exclude" resources
+	 * Checks if a file is within the list of resources to exclude
 	 *
 	 * @param string $path The file path
 	 * @return boolean Whether the file is to exclude or not
@@ -51,7 +56,7 @@ class Init {
 	}
 
 	/**
-	 * Returns header's inclusion for CSS and JS (if provided)
+	 * Returns header's inclusion for CSS and JS
 	 */
 	public function header() {
 		$this->css->generate();
@@ -59,7 +64,7 @@ class Init {
 	}
 
 	/**
-	 * Returns footer's inclusion for JS (if provided)
+	 * Returns footer's inclusion for JS
 	 */
 	public function footer() {
 		$this->js->generate('footer');

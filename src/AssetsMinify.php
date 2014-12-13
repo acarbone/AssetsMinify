@@ -2,10 +2,15 @@
 /**
  * Bootstrap class for AssetsMinify plugin.
  * It's the only entry point of this plugin.
+ * A singleton class.
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
+
 class AssetsMinify extends AssetsMinify\Pattern\Singleton {
+
 	/**
-	 * Constructor. Identify if admin session or not
+	 * Constructor
 	 */
 	protected function __construct() {
 		if ( !is_admin() )

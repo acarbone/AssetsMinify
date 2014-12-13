@@ -4,7 +4,19 @@ namespace AssetsMinify\Assets\Css;
 use Assetic\Filter\CompassFilter;
 use Assetic\Filter\ScssphpFilter;
 
+/**
+ * Scss custom cache saving
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
+ */
 class Scss {
+	/**
+	 * Constructor
+	 * 
+	 * @param array $content The files to save to cache
+	 * @param string $cachefile The cache file name
+	 * @param object $manager The Factory object
+	 */
 	public function __construct($content, $cachefile, $manager) {
 		if ( get_option('am_use_compass', 0) != 0 ) {
 			//Defines compass filter instance and sprite images paths

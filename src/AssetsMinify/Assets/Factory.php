@@ -5,11 +5,22 @@ use Assetic\Factory\AssetFactory;
 use Assetic\AssetManager;
 use Assetic\FilterManager;
 
+/**
+ * Assets Factory.
+ * Exposes the structure for assets (Js, Css) management.
+ *
+ * @author Alessandro Carbone <ale.carbo@gmail.com>
+ */
 class Factory {
 
 	protected $filters = array(),
 			  $asset = null;
 
+	/**
+	 * Constructor
+	 *
+	 * @param object $manager The init object used to retrive cache object
+	 */
 	public function __construct($manager) {
 		$this->manager = $manager;
 		$this->cache = $this->manager->cache;
@@ -21,24 +32,49 @@ class Factory {
 		$this->setFilters();
 	}
 
+	/**
+	 * Method used to set assets filters
+	 */
 	public function setFilters() {}
 
+	/**
+	 * Creates a new asset
+	 *
+	 * @param string $name Asset's name
+	 * @param string $value Asset's value
+	 * @return object
+	 */
 	public function createAsset( $name, $value ) {
 		return $this->asset->createAsset( $name, $value);
 	}
 
+	/**
+	 * Sets a new filter
+	 *
+	 * @param string $name Filter's name
+	 * @param string $value Filter's value
+	 * @return object The instance of the factory
+	 */
 	public function setFilter( $name, $value ) {
 		$this->asset->getFilterManager()->set( $name, $value );
 		$this->filters []= $name;
 		return $this;
 	}
 
+	/**
+	 * Gets all the attached filters
+	 *
+	 * @return array
+	 */
 	public function getFilters() {
 		return $this->filters;
 	}
 
 	/**
 	 * Guess absolute path from file URL
+	 *
+	 * @param string $file_url File's url
+	 * @return string
 	 */
 	public function guessPath( $file_url ) {
 
