@@ -93,7 +93,7 @@ class Js extends Factory {
 		}
 
 		//Prints <script> inclusion in the page
-		//TODO: $this->dumpScriptData($where);
+		$this->dumpScriptData( $where );
 		$async = false;
 		if( $where != 'header' && get_option('am_async_flag', 1) )
 			$async = true;
@@ -107,10 +107,6 @@ class Js extends Factory {
 		echo "<script type='text/javascript' src='" . $this->cache->getUrl() . $filename . "'" . ($async ? " async" : "") . "></script>";
 	}
 
-
-
-
-	//TODO:
 	/**
 	 * Combines the script data from all minified scripts
 	 */
@@ -118,10 +114,10 @@ class Js extends Factory {
 		global $wp_scripts;
 		$data = '';
 
-		if ( empty($this->scripts[$where] ) )
+		if ( empty($this->files[$where] ) )
 			return '';
 
-		foreach ($this->scripts[$where] as $handle => $filepath) {
+		foreach ($this->files[$where] as $handle => $filepath) {
 			$data .= $wp_scripts->print_extra_script( $handle, false );
 		}
 
@@ -136,7 +132,7 @@ class Js extends Factory {
 	protected function dumpScriptData( $where ) {
 		$data = $this->buildScriptData( $where );
 
-		if (empty($data))
+		if ( empty($data) )
 			return false;
 
 		echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5

@@ -3,7 +3,7 @@ namespace AssetsMinify;
 
 use Assetic\Cache\FilesystemCache;
 
-class Cache extends Pattern\Container {
+class Cache {
 
 	protected $path,
 		$url,
@@ -29,7 +29,6 @@ class Cache extends Pattern\Container {
 		} else {
 			$this->gc = new Cache\GarbageCollector( $this );
 		}
-
 
 		//Manager for Filesystem management
 		$this->fs = new FilesystemCache( $this->path );
