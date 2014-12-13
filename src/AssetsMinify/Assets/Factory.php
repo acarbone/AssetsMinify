@@ -11,7 +11,7 @@ use Assetic\FilterManager;
  *
  * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
-class Factory {
+abstract class Factory {
 
 	protected $filters = array(),
 			  $asset = null;
