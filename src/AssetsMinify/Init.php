@@ -20,10 +20,8 @@ class Init {
 	public function __construct() {
 		$this->cache = new Cache;
 
-		$this->js = new Js;
-		$this->js->setCache( $this->cache );
-		$this->css = new Css;
-		$this->css->setCache( $this->cache );
+		$this->js = new Js($this);
+		$this->css = new Css($this);
 
 		$this->exclusions = preg_split('/[ ]*,[ ]*/', trim(get_option('am_files_to_exclude')));
 
@@ -44,7 +42,7 @@ class Init {
 	 * @param string $path The file path
 	 * @return boolean Whether the file is to exclude or not
 	 */
-	protected function isFileExcluded( $path ) {
+	public function isFileExcluded( $path ) {
 		$filename = explode('/', $path);
 		if ( in_array($filename[ count($filename) - 1 ], $this->exclusions) )
 			return true;

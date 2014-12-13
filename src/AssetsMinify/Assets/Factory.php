@@ -10,10 +10,14 @@ class Factory {
 	protected $filters = array(),
 			  $asset = null;
 
-	public function __construct() {
+	public function __construct($manager) {
+		$this->manager = $manager;
+		$this->cache = $this->manager->cache;
+
 		$this->asset = new AssetFactory( ABSPATH );
 		$this->asset->setAssetManager( new AssetManager );
 		$this->asset->setFilterManager( new FilterManager );
+
 		$this->setFilters();
 	}
 
@@ -31,10 +35,6 @@ class Factory {
 
 	public function getFilters() {
 		return $this->filters;
-	}
-
-	public function setCache( $cache ) {
-		$this->cache = $cache;
 	}
 
 	/**

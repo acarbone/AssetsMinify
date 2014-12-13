@@ -31,8 +31,8 @@ class Css extends Factory {
 
 		foreach( $wp_styles->to_do as $key => $handle ) {
 
-			/*TODO: if ( $this->isFileExcluded($wp_styles->registered[$handle]->src) )
-				continue;*/
+			if ( $this->manager->isFileExcluded($wp_styles->registered[$handle]->src) )
+				continue;
 
 			//Removes absolute part of the path if it's specified in the src
 			$style_path = $this->guessPath($wp_styles->registered[$handle]->src);

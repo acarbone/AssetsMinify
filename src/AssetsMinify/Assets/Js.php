@@ -28,8 +28,8 @@ class Js extends Factory {
 
 		foreach( $wp_scripts->to_do as $key => $handle ) {
 
-			/*TODO:if ( $this->isFileExcluded($wp_scripts->registered[$handle]->src) )
-				continue;*/
+			if ( $this->manager->isFileExcluded($wp_scripts->registered[$handle]->src) )
+				continue;
 
 			$script_path = $this->guessPath($wp_scripts->registered[$handle]->src);
 
