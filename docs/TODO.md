@@ -13,8 +13,8 @@ Todo
 
 ### Re-organization
 
-- Rewrite unit-tests and write code using TDD
 - Reorganize the Init class to be splitted in more classes
+- Rewrite unit-tests and write code using TDD
 
 ### Bugfix
 
@@ -40,6 +40,8 @@ Todo
 
 Done
 -------------
+
+### Re-organization
 
 - Dependency management with composer for external libraries
 - Manage Travis CI integration

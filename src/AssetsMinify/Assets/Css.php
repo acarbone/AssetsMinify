@@ -4,10 +4,12 @@ namespace AssetsMinify\Assets;
 use Assetic\Filter\MinifyCssCompressorFilter;
 use Assetic\Filter\CssRewriteFilter;
 
+//use Minify_CSSmin;
+
 class Css extends Factory {
 
 	protected $assets = array(),
-			  $styles = array(),
+			  $files  = array(),
 			  $mtimes = array();
 
 	public function setFilters() {
@@ -42,7 +44,7 @@ class Css extends Factory {
 			if ( !file_exists($style_path) )
 				continue;
 
-			//Separation between css-frameworks stylesheets and .css stylesheets
+			//Separation between preprocessors and css stylesheets
 			$ext = 'css';
 			$parts = explode('.', $style_path);
 			if ( count($parts) > 0 ) {
@@ -76,19 +78,18 @@ class Css extends Factory {
 			}
 
 			$key = "$ext-am-generated";
-			$this->styles[$key] = $this->cache->getPath() . $cachefile;
-			$this->mtimes[$key] = filemtime($this->styles[$key]);
+			$this->files[$key] = $this->cache->getPath() . $cachefile;
+			$this->mtimes[$key] = filemtime($this->files[$key]);
 		}
 
-		if ( empty($this->styles) )
+		if ( empty($this->files) )
 			return false;
-
 
 		$mtime = md5( json_encode($this->mtimes) );
 
 		//Saves the asseticized stylesheets
 		if ( !$this->cache->fs->has( "head-{$mtime}.css" ) ) {
-			$cssDump = str_replace('../', '/', $this->createAsset( $this->styles, $this->getFilters() )->dump() );
+			$cssDump = str_replace('../', '/', $this->createAsset( $this->files, $this->getFilters() )->dump() );
 			$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
 			$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
 			$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );

@@ -2,8 +2,13 @@
 namespace AssetsMinify\Assets;
 
 use Assetic\Filter\JSMinFilter;
+use Assetic\Asset\StringAsset;
 
 class Js extends Factory {
+
+	protected $assets = array(),
+			  $files  = array(),
+			  $mtimes = array();
 
 	public function setFilters() {
 		$this->setFilter('JSMin', new JSMinFilter);
@@ -33,24 +38,21 @@ class Js extends Factory {
 				continue;
 
 			$where = 'footer';
-			//Unfortunately not every WP plugin developer is a JS ninja
-			//So... let's put it in the header.
+
 			if ( empty($wp_scripts->registered[$handle]->extra) && empty($wp_scripts->registered[$handle]->args) )
 				$where = 'header';
 
 			if ( empty($script_path) || !is_file($script_path) )
 				continue;
 
-			//Separation between css-frameworks stylesheets and .css stylesheets
-			$ext = substr( $script_path, -7 );
-
-			if ( $ext === '.coffee' ) {
-				$this->coffee[ $where ][ $handle ] = $script_path;
-				$this->mTimesCoffee[ $where ][ $handle ]  = filemtime( $this->coffee[ $where ][ $handle ] );
-			} else {
-				$this->scripts[ $where ][ $handle ] = $script_path;
-				$this->mTimes[ $where ][ $handle ]  = filemtime( $this->scripts[ $where ][ $handle ] );
+			$ext = 'js';
+			$parts = explode('.', $script_path);
+			if ( count($parts) > 0 ) {
+				$ext = $parts[ count($parts) - 1 ];
 			}
+
+			$this->assets[$where][$ext]['files'][$handle] = $script_path;
+			$this->assets[$where][$ext]['mtimes'][$handle] = filemtime($script_path);
 
 			//Removes scripts from the queue so this plugin will be
 			//responsible to include all the scripts except other domains ones.
@@ -60,6 +62,87 @@ class Js extends Factory {
 			$wp_scripts->done[] = $handle;
 			unset($wp_scripts->to_do[$key]);
 		}
+	}
 
+	/**
+	 * Takes all the JavaScripts and manages their queue to asseticize them
+	 */
+	public function generate($where) {
+		foreach ( $this->assets[$where] as $ext => $content ) {
+			$mtime = md5( json_encode($content) );
+			$cachefile = "$where-$ext-$mtime.js";
+
+			if ( !$this->cache->fs->has( $cachefile ) ) {
+				$class = "AssetsMinify\\Assets\\Js\\" . ucfirst($ext);
+				new $class( $content['files'], $cachefile, $this );
+			}
+
+			$key = "$ext-am-generated";
+			$this->files[$where][$key] = $this->cache->getPath() . $cachefile;
+			$this->mtimes[$where][$key] = filemtime($this->files[$where][$key]);
+		}
+
+		if ( empty($this->files[$where]) )
+			return false;
+
+		$mtime = md5( json_encode($this->mtimes[$where]) );
+
+		//Saves the asseticized header scripts
+		if ( !$this->cache->fs->has( "$where-$mtime.js" ) ) {
+			$this->cache->fs->set( "$where-$mtime.js", $this->createAsset( $this->files[$where], $this->getFilters() )->dump() );
+		}
+
+		//Prints <script> inclusion in the page
+		//TODO: $this->dumpScriptData($where);
+		$async = false;
+		if( $where != 'header' && get_option('am_async_flag', 1) )
+			$async = true;
+		$this->dump( "$where-$mtime.js", $async );
+	}
+
+	/**
+	 * Prints <script> tag to include the JS
+	 */
+	protected function dump( $filename, $async = true ) {
+		echo "<script type='text/javascript' src='" . $this->cache->getUrl() . $filename . "'" . ($async ? " async" : "") . "></script>";
+	}
+
+
+
+
+	//TODO:
+	/**
+	 * Combines the script data from all minified scripts
+	 */
+	protected function buildScriptData( $where ) {
+		global $wp_scripts;
+		$data = '';
+
+		if ( empty($this->scripts[$where] ) )
+			return '';
+
+		foreach ($this->scripts[$where] as $handle => $filepath) {
+			$data .= $wp_scripts->print_extra_script( $handle, false );
+		}
+
+		$asset = new StringAsset( $data, array(new JSMinFilter) );
+
+		return $asset->dump();
+	}
+
+	/**
+	 * Prints <script> tags with addtional script data and i10n
+	 */
+	protected function dumpScriptData( $where ) {
+		$data = $this->buildScriptData( $where );
+
+		if (empty($data))
+			return false;
+
+		echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
+		echo "/* <![CDATA[ */\n";
+		echo "$data\n";
+		echo "/* ]]> */\n";
+		echo "</script>\n";
 	}
 }
