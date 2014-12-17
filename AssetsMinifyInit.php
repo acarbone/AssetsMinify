@@ -299,7 +299,7 @@ class AssetsMinifyInit {
 
 			//Saves the asseticized stylesheets
 			if ( !$this->cache->has( "head-{$mtime}.css" ) ) {
-				$cssDump = str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
+				$cssDump = $this->css->createAsset( $this->styles, $this->cssFilters )->dump();
 				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
 				$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
 				$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
@@ -386,7 +386,12 @@ class AssetsMinifyInit {
 
 		//If CSS stylesheets have been updated compile and save them 
 		if ( !$this->cache->has( "styles-{$mtime}.css" ) )
-			$this->cache->set( "styles-{$mtime}.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
+			$this->cache->set( "styles-{$mtime}.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ), array(
+				'root' => array(
+					WP_CONTENT_DIR
+				),
+				'output' => 'uploads/am_assets/*'
+			) )->dump() );
 
 		//Adds CSS compiled stylesheet to normal css queue
 		$this->styles       = array( 'styles-am-generated' => $this->assetsPath . "styles-{$mtime}.css");
