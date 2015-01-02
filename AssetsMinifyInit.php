@@ -132,12 +132,14 @@ class AssetsMinifyInit {
 		$wp_content_url = content_url();
 
 		// Script is enqueued from a plugin
-		if( strpos($file_url, $wp_plugin_url) !== false )
-			$file_path = WP_PLUGIN_DIR . str_replace($wp_plugin_url, '', $file_url);
+		$url_regex = $this->getUrlRegex($wp_plugin_url);
+		if( preg_match($url_regex, $file_url) > 0 )
+			$file_path = WP_PLUGIN_DIR . preg_replace($url_regex, '', $file_url);
 
 		// Script is enqueued from a theme
-		if( strpos($file_url, $wp_content_url) !== false )
-			$file_path = WP_CONTENT_DIR . str_replace($wp_content_url, '', $file_url);
+		$url_regex = $this->getUrlRegex($wp_content_url);
+		if( preg_match($url_regex, $file_url) > 0 )
+			$file_path = WP_CONTENT_DIR . preg_replace($url_regex, '', $file_url);
 
 		// Script is enqueued from wordpress
 		if( strpos($file_url,  WPINC) !== false )
@@ -145,6 +147,18 @@ class AssetsMinifyInit {
 
 		return $file_path;
 	}
+	
+	/**
+	 * Returns Regular Expression string to match an URL.
+	 *
+	 * @param string $url The URL to be matched.
+	 * @return string The regular expression matching the URL.
+	 */
+	protected function getUrlRegex( $url ) {
+		$regex  = '@^' . str_replace( 'http\://','https?\:\/\/', preg_quote( $url )) . '@';
+		return $regex;
+	}
+	
 
 	/**
 	 * Checks if the file is within the list of "to exclude" resources
