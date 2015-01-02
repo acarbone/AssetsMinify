@@ -49,7 +49,7 @@ class AssetsMinifyInit {
 
 	protected $jsMin        = 'JSMin';
 	protected $cssMin       = 'CssMin';
-
+	
 	/**
 	 * Constructor of the class
 	 */
@@ -219,7 +219,8 @@ class AssetsMinifyInit {
 	 */
 	public function extractStyles() {
 		global $wp_styles;
-
+		$media = 'screen, projection';
+		
 		if ( empty($wp_styles->queue) )
 			return;
 
@@ -240,20 +241,25 @@ class AssetsMinifyInit {
 
 			if ( !file_exists($style_path) )
 				continue;
+			//Save media strings for stylesheets
 
+			$media = $wp_styles->registered[$handle]->args;
+			if ( $media == '' )
+				$media = 'all';
+			
 			//Separation between css-frameworks stylesheets and .css stylesheets
 			$ext = substr( $style_path, -5 );
 			if ( in_array( $ext, array('.sass', '.scss') ) ) {
-				$this->sass[ $handle ]       = $style_path;
-				$this->mTimesSass[ $handle ] = filemtime($this->sass[ $handle ]);
+				$this->sass[ $media ][ $handle ]       = $style_path;
+				$this->mTimesSass[ $media ][ $handle ] = filemtime($this->sass[ $media ][ $handle ]);
 			} elseif ( $ext == '.less' ) {
-				$this->less[ $handle ]       = $style_path;
-				$this->mTimesLess[ $handle ] = filemtime($this->less[ $handle ]);
+				$this->less[ $media ][ $handle ]       = $style_path;
+				$this->mTimesLess[ $media ][ $handle ] = filemtime($this->less[ $media ][ $handle ]);
 			} else {
-				$this->styles[ $handle ]       = $style_path;
-				$this->mTimesStyles[ $handle ] = filemtime($this->styles[ $handle ]);
+				$this->styles[ $media ][ $handle ]       = $style_path;
+				$this->mTimesStyles[ $media ][ $handle ] = filemtime($this->styles[ $media ][ $handle ]);
 			}
-
+			
 			//Removes css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
 			$wp_styles->dequeue( $handle );
@@ -280,19 +286,24 @@ class AssetsMinifyInit {
 
 		//Manages the stylesheets
 		if ( !empty($this->styles) ) {
-			$mtime = md5(implode('&', $this->mTimesStyles));
-
-			//Saves the asseticized stylesheets
-			if ( !$this->cache->has( "head-{$mtime}.css" ) ) {
-				$cssDump = str_replace('../', '/', $this->css->createAsset( $this->styles, $this->cssFilters )->dump() );
-				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
-				$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
-				$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
-				$this->cache->set( "head-{$mtime}.css", $cssDump );
+			foreach ( array_keys($this->styles) as $media ) {
+				if (empty($this->styles[$media]))
+					continue;
+				
+				$mtime = md5(implode('&', $this->mTimesStyles[$media]));
+	
+				//Saves the asseticized stylesheets
+				if ( !$this->cache->has( "head-{$mtime}-{$media}.css" ) ) {
+					$cssDump = str_replace('../', '/', $this->css->createAsset( $this->styles[$media], $this->cssFilters )->dump() );
+					$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
+					$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
+					$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
+					$this->cache->set( "head-{$mtime}-{$media}.css", $cssDump );
+				}
+	
+				//Prints css inclusion in the page
+				$this->dumpCss( "head-{$mtime}-{$media}.css", $media );
 			}
-
-			//Prints css inclusion in the page
-			$this->dumpCss( "head-{$mtime}.css" );
 		}
 
 		//Manages the scripts from CoffeeScript to be printed in the header
@@ -309,32 +320,37 @@ class AssetsMinifyInit {
 	public function generateSass() {
 		if ( empty($this->sass) )
 			return false;
-
-		$mtime = md5(implode('&', $this->mTimesSass) . implode('&', $this->sass));
-
-		//If SASS stylesheets have been updated -> compass compile
-		if ( !$this->cache->has( "sass-{$mtime}.css" ) ) {
-
-			if ( get_option('am_use_compass', 0) != 0 ) {
-				//Defines compass filter instance and sprite images paths
-				$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
-				$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
-				$compassInstance->setGeneratedImagesPath( $this->assetsPath );
-				$compassInstance->setHttpGeneratedImagesPath( site_url() . str_replace( getcwd(), '', $this->assetsPath ) );
-				$this->css->getFilterManager()->set('Compass', $compassInstance);
-				$filter = 'Compass';
-			} else {
-				$this->css->getFilterManager()->set('Scssphp', new ScssphpFilter);
-				$filter = 'Scssphp';
+		
+		foreach ( array_keys($this->sass) as $media ) {
+			if ( empty($this->sass[$media]) )
+				continue;
+			
+			$mtime = md5(implode('&', $this->mTimesSass[$media]) . implode('&', $this->sass[$media]));
+	
+			//If SASS stylesheets have been updated -> compass compile
+			if ( !$this->cache->has( "sass-{$mtime}-{$media}.css" ) ) {
+	
+				if ( get_option('am_use_compass', 0) != 0 ) {
+					//Defines compass filter instance and sprite images paths
+					$compassInstance = new CompassFilter( get_option('am_compass_path', '/usr/bin/compass') );
+					$compassInstance->setImagesDir(get_theme_root() . "/" . get_template() . "/images");
+					$compassInstance->setGeneratedImagesPath( $this->assetsPath );
+					$compassInstance->setHttpGeneratedImagesPath( site_url() . str_replace( getcwd(), '', $this->assetsPath ) );
+					$this->css->getFilterManager()->set('Compass', $compassInstance);
+					$filter = 'Compass';
+				} else {
+					$this->css->getFilterManager()->set('Scssphp', new ScssphpFilter);
+					$filter = 'Scssphp';
+				}
+	
+				//Saves the asseticized stylesheets
+				$this->cache->set( "sass-{$mtime}-{$media}.css", $this->css->createAsset( $this->sass[$media], array( $filter, 'CssRewrite' ) )->dump() );
 			}
-
-			//Saves the asseticized stylesheets
-			$this->cache->set( "sass-{$mtime}.css", $this->css->createAsset( $this->sass, array( $filter, 'CssRewrite' ) )->dump() );
+	
+			//Adds SASS compiled stylesheet to normal css queue
+			$this->styles[$media]["sass-am-generated-{$media}"]       = $this->assetsPath . "sass-{$mtime}-{$media}.css";
+			$this->mTimesStyles[$media]["sass-am-generated-{$media}"] = filemtime($this->styles[$media]["sass-am-generated-{$media}"]);
 		}
-
-		//Adds SASS compiled stylesheet to normal css queue
-		$this->styles['sass-am-generated']       = $this->assetsPath . "sass-{$mtime}.css";
-		$this->mTimesStyles['sass-am-generated'] = filemtime($this->styles['sass-am-generated']);
 	}
 
 	/**
@@ -344,20 +360,25 @@ class AssetsMinifyInit {
 		if ( empty($this->less) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimesLess) . implode('&', $this->less));
-
-		//If LESS stylesheets have been updated compile them
-		if ( !$this->cache->has( "less-{$mtime}.css" )  ) {
-			//Defines compass filter instance and sprite images paths
-			$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
-
-			//Saves the asseticized stylesheets
-			$this->cache->set( "less-{$mtime}.css", $this->css->createAsset( $this->less, array( 'Lessphp', 'CssRewrite' ) )->dump() );
+		foreach ( array_keys($this->sass) as $media ) {
+			if ( empty($this->sass[$media]) )
+				continue;
+				
+			$mtime = md5(implode('&', $this->mTimesLess[$media]) . implode('&', $this->less[$media]));
+		
+			//If LESS stylesheets have been updated compile them
+			if ( !$this->cache->has( "less-{$mtime}-{$media}.css" )  ) {
+				//Defines compass filter instance and sprite images paths
+				$this->css->getFilterManager()->set('Lessphp', new LessphpFilter);
+		
+				//Saves the asseticized stylesheets
+				$this->cache->set( "less-{$mtime}-{$media}.css", $this->css->createAsset( $this->less[$media], array( 'Lessphp', 'CssRewrite' ) )->dump() );
+			}
+		
+			//Adds LESS compiled stylesheet to normal css queue
+			$this->styles[$media]["less-am-generated-{$media}"]       = $this->assetsPath . "less-{$mtime}-{$media}.css";
+			$this->mTimesStyles[$media]["less-am-generated-{$media}"] = filemtime($this->styles[$media]["less-am-generated-{$media}"]);
 		}
-
-		//Adds LESS compiled stylesheet to normal css queue
-		$this->styles['less-am-generated']       = $this->assetsPath . "less-{$mtime}.css";
-		$this->mTimesStyles['less-am-generated'] = filemtime($this->styles['less-am-generated']);
 	}
 
 	/**
@@ -367,15 +388,20 @@ class AssetsMinifyInit {
 		if ( empty($this->styles) )
 			return false;
 
-		$mtime = md5(implode('&', $this->mTimesStyles) . implode('&', $this->styles));
-
-		//If CSS stylesheets have been updated compile and save them 
-		if ( !$this->cache->has( "styles-{$mtime}.css" ) )
-			$this->cache->set( "styles-{$mtime}.css", $this->css->createAsset( $this->styles, array( 'CssRewrite' ) )->dump() );
-
-		//Adds CSS compiled stylesheet to normal css queue
-		$this->styles       = array( 'styles-am-generated' => $this->assetsPath . "styles-{$mtime}.css");
-		$this->mTimesStyles = array( 'styles-am-generated' => filemtime($this->styles['styles-am-generated']) );
+		foreach ( array_keys($this->styles) as $media ) {
+			if ( empty($this->styles[$media]) )
+				continue;
+			
+			$mtime = md5(implode('&', $this->mTimesStyles[$media]) . implode('&', $this->styles[$media]));
+	
+			//If CSS stylesheets have been updated compile and save them 
+			if ( !$this->cache->has( "styles-{$mtime}-{$media}.css" ) )
+				$this->cache->set( "styles-{$mtime}-{$media}.css", $this->css->createAsset( $this->styles[$media], array( 'CssRewrite' ) )->dump() );
+	
+			//Adds CSS compiled stylesheet to normal css queue
+			$this->styles[$media]       = array( "styles-am-generated-{$media}" => $this->assetsPath . "styles-{$mtime}-{$media}.css");
+			$this->mTimesStyles[$media] = array( "styles-am-generated-{$media}" => filemtime($this->styles[$media]["styles-am-generated-{$media}"]) );
+		}
 	}
 
 	/**
@@ -473,8 +499,9 @@ class AssetsMinifyInit {
 	/**
 	 * Prints <link> tag to include the CSS
 	 */
-	protected function dumpCss( $filename ) {
-		echo "<link href='" . $this->assetsUrl . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
+	protected function dumpCss( $filename, $media = 'screen, projection' ) {
+		//echo "<link href='" . $this->assetsUrl . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
+		echo "<link href='" . $this->assetsUrl . $filename . "' media='" . $media . "' rel='stylesheet' type='text/css'>";
 	}
 
 	/**
