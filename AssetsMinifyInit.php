@@ -258,7 +258,7 @@ class AssetsMinifyInit {
 			} else {
 				$this->styles[ $media ][ $handle ]       = $style_path;
 				$this->mTimesStyles[ $media ][ $handle ] = filemtime($this->styles[ $media ][ $handle ]);
-			}
+			} 
 			
 			//Removes css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
