@@ -500,7 +500,6 @@ class AssetsMinifyInit {
 	 * Prints <link> tag to include the CSS
 	 */
 	protected function dumpCss( $filename, $media = 'screen, projection' ) {
-		//echo "<link href='" . $this->assetsUrl . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
 		echo "<link href='" . $this->assetsUrl . $filename . "' media='" . $media . "' rel='stylesheet' type='text/css'>";
 	}
 
