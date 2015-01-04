@@ -15,7 +15,9 @@ class Cache {
 		$url,
 		$wp_upload_dir;
 
-	public $fs;
+	public static $directory = 'am_assets';
+	public $fs,
+		   $gc;
 
 	/**
 	 * Constructor
@@ -23,7 +25,7 @@ class Cache {
 	public function __construct() {
 		//WordPress directories detection
 		$this->wp_upload_dir = wp_upload_dir();
-		$this->url  = str_replace( 'http://', '//', $this->wp_upload_dir['baseurl'] ) . '/am_assets/';
+		$this->url  = str_replace( 'http://', '//', $this->wp_upload_dir['baseurl'] ) . '/' . self::$directory . '/';
 		$this->path = $this->wp_upload_dir['basedir'];
 
 		//Creates the uploads dir
@@ -31,7 +33,7 @@ class Cache {
 			mkdir($this->path, 0777);
 		}
 
-		$this->path .=  '/am_assets/';
+		$this->path .=  '/' . self::$directory . '/';
 
 		//Creates the AM cache dir
 		if ( !is_dir($this->path) ) {

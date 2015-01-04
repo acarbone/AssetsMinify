@@ -1,4 +1,6 @@
 <?php
+use AssetsMinify\Cache;
+
 class AdminTest extends WP_UnitTestCase {
 
 	protected $admin;
@@ -22,9 +24,9 @@ class AdminTest extends WP_UnitTestCase {
 
 	public function testEmptyCache() {
 		$uploadsDir = wp_upload_dir();
-		$cachedFilesBefore = count(glob($uploadsDir['basedir'] . '/am_assets/' . "*.*"));
+		$cachedFilesBefore = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
 		$this->admin->emptyCache();
-		$cachedFilesAfter = count(glob($uploadsDir['basedir'] . '/am_assets/' . "*.*"));
+		$cachedFilesAfter = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
 		$this->assertGreaterThanOrEqual( $cachedFilesBefore, $cachedFilesAfter );
 	}
 }

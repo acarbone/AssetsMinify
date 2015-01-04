@@ -1,6 +1,8 @@
 <?php
 namespace AssetsMinify;
 
+use AssetsMinify\Cache;
+
 /**
  * Admin's page manager.
  * Prints out every field managed from AssetsMinify's admin page 
@@ -40,7 +42,7 @@ class Admin {
 	 */
 	public function emptyCache() {
 		$uploadsDir = wp_upload_dir();
-		$filesList = glob($uploadsDir['basedir'] . '/am_assets/' . "*.*");
+		$filesList = glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*");
 		if ( $filesList !== false ) {
 			array_map('unlink', $filesList);
 		}
