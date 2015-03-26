@@ -14,7 +14,8 @@ class Js extends Factory {
 
 	protected $assets = array(),
 			  $files  = array(),
-			  $mtimes = array();
+			  $mtimes = array(),
+			  $localized = array();
 
 	public function setFilters() {
 		$this->setFilter('JSMin', new JSMinFilter);
@@ -55,6 +56,10 @@ class Js extends Factory {
 			$parts = explode('.', $script_path);
 			if ( count($parts) > 0 ) {
 				$ext = $parts[ count($parts) - 1 ];
+			}
+
+			if ( !empty($wp_scripts->registered[$handle]->extra['data']) ) {
+				$this->localized[$where][] = $wp_scripts->registered[$handle]->extra['data'];
 			}
 
 			$this->assets[$where][$ext]['files'][$handle] = $script_path;
@@ -125,16 +130,16 @@ class Js extends Factory {
 	 * @return string The script to include within the page
 	 */
 	protected function buildScriptData( $where ) {
-		global $wp_scripts;
 		$data = '';
 
-		if ( empty($this->files[$where] ) )
+		if ( empty($this->localized[$where]) )
 			return '';
 
-		foreach ($this->files[$where] as $handle => $filepath) {
-			$data .= $wp_scripts->print_extra_script( $handle, false );
+		foreach ($this->localized[$where] as $script) {
+			$data .= $script;
 		}
 
+		//var_Dump($this->localized);
 		$asset = new StringAsset( $data, array(new JSMinFilter) );
 
 		return $asset->dump();

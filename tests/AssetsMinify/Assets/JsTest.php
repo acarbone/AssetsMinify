@@ -41,4 +41,23 @@ class JsTest extends WP_UnitTestCase {
 		$dump = ob_get_clean();
 		$this->assertStringStartsWith( "<script type='text/javascript'", $dump );
 	}
+
+	public function testLocalizeScripts() {
+		global $wp_scripts;
+		wp_enqueue_script( 'localize', get_template_directory_uri() . '/js/functions.js', array(), '1.0', true );
+		wp_localize_script( 'localize', 'localizeVar', array(
+			'var' => 'value'
+		));
+		$this->js->extract();
+
+		ob_start();
+		$this->js->generate( 'footer' );
+		$footer = ob_get_clean();
+
+		$rawJs = 'var localizeVar = {"var":"value"};';
+		$minfiedJs = 'var localizeVar={"var":"value"};';
+
+		$this->assertSame( $rawJs, $wp_scripts->registered['localize']->extra['data'] );
+		$this->assertContains( $minfiedJs, $footer );
+	}
 }
