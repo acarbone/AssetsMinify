@@ -28,7 +28,7 @@ class CssTest extends WP_UnitTestCase {
 
 	public function testExtract() {
 		global $wp_styles;
-		wp_enqueue_style( 'twentytwelve-style', get_stylesheet_uri() );
+		wp_enqueue_style( 'style-extract', get_stylesheet_uri() );
 
 		$external = 0;
 		foreach( $wp_styles->queue as $handle ) {
@@ -40,5 +40,15 @@ class CssTest extends WP_UnitTestCase {
 		}
 		$this->css->extract();
 		$this->assertEquals( count($wp_styles->queue), $external );
+	}
+
+	public function testGenerate() {
+		wp_enqueue_style( 'style-generate', get_stylesheet_uri() );
+		$this->css->extract();
+
+		ob_start();
+		$this->css->generate();
+		$dump = ob_get_clean();
+		$this->assertStringStartsWith( "<link href=", $dump );
 	}
 }
