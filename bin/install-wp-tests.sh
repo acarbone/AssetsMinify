@@ -25,12 +25,19 @@ install_wp() {
 		local ARCHIVE_NAME="wordpress-$WP_VERSION"
 	fi
 
-	wget -nv -O /tmp/wordpress.tar.gz http://wordpress.org/${ARCHIVE_NAME}.tar.gz
-	tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
+	if [ ! -f /tmp/wordpress.tar.gz ]; then
+		wget -nv -O /tmp/wordpress.tar.gz http://wordpress.org/${ARCHIVE_NAME}.tar.gz
+		tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
+	fi
 
-	wget -nv -O $WP_CORE_DIR/wp-content/db.php https://raw.github.com/markoheijnen/wp-mysqli/master/db.php
-	mkdir $WP_CORE_DIR/wp-content/uploads
-	chmod 777 $WP_CORE_DIR/wp-content/uploads
+	if [ ! -f $WP_CORE_DIR/wp-content/db.php ]; then
+		wget -nv -O $WP_CORE_DIR/wp-content/db.php https://raw.github.com/markoheijnen/wp-mysqli/master/db.php
+	fi
+
+	if [ ! -d $WP_CORE_DIR/wp-content/uploads ]; then
+		mkdir $WP_CORE_DIR/wp-content/uploads
+		chmod 777 $WP_CORE_DIR/wp-content/uploads
+	fi
 }
 
 install_test_suite() {
