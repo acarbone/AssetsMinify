@@ -27,6 +27,6 @@ class AdminTest extends WP_UnitTestCase {
 		$cachedFilesBefore = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
 		$this->admin->emptyCache();
 		$cachedFilesAfter = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
-		$this->assertGreaterThanOrEqual( $cachedFilesBefore, $cachedFilesAfter );
+		$this->assertGreaterThanOrEqual( $cachedFilesAfter, $cachedFilesBefore );
 	}
 }

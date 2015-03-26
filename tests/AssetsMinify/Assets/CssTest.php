@@ -17,15 +17,6 @@ class CssTest extends WP_UnitTestCase {
 		$this->assertFalse( isset($filters[2]) );
 	}
 
-	public function testEnqueue() {
-		global $wp_styles;
-		wp_enqueue_style( 'twentytwelve-style', get_stylesheet_uri() );
-
-		//do_action( 'wp_print_styles' );
-		$this->assertFalse( empty($wp_styles) );
-		$this->assertTrue( is_array($wp_styles->queue) );
-	}
-
 	public function testExtract() {
 		global $wp_styles;
 		wp_enqueue_style( 'style-extract', get_stylesheet_uri() );
