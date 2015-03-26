@@ -11,10 +11,6 @@ The next version released will be 2.0.0.
 Todo
 -------------
 
-### Re-organization
-
-- Rewrite unit-tests and write code using TDD
-
 ### Bugfix
 
 - [Built-in scripts should also be included](https://wordpress.org/support/topic/built-in-scripts-that-should-be-enqueued-in-footer-are-enqueued-in-header)
@@ -35,7 +31,7 @@ Todo
 ### New features
 
 - Image optimization tool: default flag? Helper function for coding themes?
-- Analyze better optimizations to speed up WP
+- Analyze better optimizations to speed up WP (gz?)
 
 
 Done
@@ -46,3 +42,4 @@ Done
 - Dependency management with composer for external libraries
 - Manage Travis CI integration
 - Reorganize the Init class to be splitted in more classes
+- Rewrite unit-tests and write code using TDD
