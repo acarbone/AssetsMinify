@@ -13,7 +13,6 @@ Todo
 
 ### Bugfix
 
-- [Built-in scripts should also be included](https://wordpress.org/support/topic/built-in-scripts-that-should-be-enqueued-in-footer-are-enqueued-in-header)
 - Test on SSL
 
 ### Enhancement
@@ -43,3 +42,7 @@ Done
 - Manage Travis CI integration
 - Reorganize the Init class to be splitted in more classes
 - Rewrite unit-tests and write code using TDD
+
+### Bugfix
+
+- [Built-in scripts should also be included](https://wordpress.org/support/topic/built-in-scripts-that-should-be-enqueued-in-footer-are-enqueued-in-header)
