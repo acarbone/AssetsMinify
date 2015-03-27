@@ -21,6 +21,7 @@ Todo
 - Reorganize the admin page
 - Write script to help manage git->svn repo (only some files need to be copied)
 - Compare JSMin to patchwork/jsqueeze
+- [Should be used Cache Busting from Assetic?](https://github.com/kriswallsmith/assetic#user-content-cache-busting)
 
 ### New features
 

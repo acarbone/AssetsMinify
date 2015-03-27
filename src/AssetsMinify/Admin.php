@@ -17,6 +17,7 @@ class Admin {
 	protected $options = array(
 		'am_use_compass',
 		'am_compass_path',
+		'am_sass_path',
 		'am_coffeescript_path',
 		'am_async_flag',
 		'am_compress_styles',
