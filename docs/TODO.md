@@ -13,7 +13,6 @@ Todo
 
 ### Enhancement
 
-- [SASS Placeholder support](https://wordpress.org/support/topic/scss-compiler-chokes-on-placeholder-selectors)
 - Enable SASS, not only SCSS
 - Enable Stylus
 - [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
@@ -43,3 +42,7 @@ Done
 
 - [Built-in scripts should also be included](https://wordpress.org/support/topic/built-in-scripts-that-should-be-enqueued-in-footer-are-enqueued-in-header)
 - Test on SSL
+
+### Enhancement
+
+- [SASS Placeholder support](https://wordpress.org/support/topic/scss-compiler-chokes-on-placeholder-selectors)
