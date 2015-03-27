@@ -13,7 +13,6 @@ Todo
 
 ### Enhancement
 
-- Enable Stylus
 - [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
 - [Allow different media types](https://wordpress.org/support/topic/media-type)
 - [Allow to exclude css/js](https://github.com/acarbone/AssetsMinify/issues/21), [2](https://github.com/acarbone/AssetsMinify/issues/22)
