@@ -13,7 +13,6 @@ Todo
 
 ### Enhancement
 
-- Enable SASS, not only SCSS
 - Enable Stylus
 - [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
 - [Allow different media types](https://wordpress.org/support/topic/media-type)
@@ -47,3 +46,4 @@ Done
 ### Enhancement
 
 - [SASS Placeholder support](https://wordpress.org/support/topic/scss-compiler-chokes-on-placeholder-selectors)
+- Enable SASS, not only SCSS

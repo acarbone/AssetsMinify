@@ -1,12 +1,15 @@
 <?php
 namespace AssetsMinify\Assets\Css;
 
+use Assetic\Filter\Sass\SassFilter;
+use Assetic\Filter\CssRewriteFilter;
+
 /**
  * Sass custom cache saving
  *
  * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
-class Sass {
+class Sass extends \AssetsMinify\Assets\Factory {
 	/**
 	 * Constructor
 	 * 
@@ -15,5 +18,12 @@ class Sass {
 	 * @param object $manager The Factory object
 	 */
 	public function __construct($content, $cachefile, $manager) {
+		parent::__construct( $this );
+		$manager->cache->fs->set( $cachefile, $this->createAsset( $content, $this->getFilters() )->dump() );
+	}
+
+	public function setFilters() {
+		$this->setFilter('Sass', new SassFilter( get_option('am_sass_path', '/usr/bin/sass') ))
+			->setFilter('CssRewrite', new CssRewriteFilter);
 	}
 }
