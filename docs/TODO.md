@@ -11,10 +11,6 @@ The next version released will be 2.0.0.
 Todo
 -------------
 
-### Bugfix
-
-- Test on SSL
-
 ### Enhancement
 
 - [SASS Placeholder support](https://wordpress.org/support/topic/scss-compiler-chokes-on-placeholder-selectors)
@@ -46,3 +42,4 @@ Done
 ### Bugfix
 
 - [Built-in scripts should also be included](https://wordpress.org/support/topic/built-in-scripts-that-should-be-enqueued-in-footer-are-enqueued-in-header)
+- Test on SSL
