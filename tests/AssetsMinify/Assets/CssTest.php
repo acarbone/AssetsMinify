@@ -42,4 +42,16 @@ class CssTest extends WP_UnitTestCase {
 		$dump = ob_get_clean();
 		$this->assertStringStartsWith( "<link href=", $dump );
 	}
+
+	public function testMediaInclusion() {
+		wp_enqueue_style( 'style-media-include-screen', get_stylesheet_uri(), array(), false, 'screen' );
+		wp_enqueue_style( 'style-media-include-print', get_stylesheet_uri(), array(), false, 'print' );
+		$this->css->extract();
+
+		ob_start();
+		$this->css->generate();
+		$dump = ob_get_clean();
+		$this->assertContains( "media='screen'", $dump );
+		$this->assertContains( "media='print'", $dump );
+	}
 }

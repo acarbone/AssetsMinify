@@ -24,7 +24,7 @@ Todo
 ### New features
 
 - Image optimization tool: default flag? Helper function for coding themes?
-- Analyze better optimizations to speed up WP (gz?)
+- Analyze better optimizations to speed up WP (https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer)
 
 
 Done

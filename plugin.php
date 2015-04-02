@@ -8,5 +8,4 @@ Version: 1.2.3
 Author URI: http://www.artera.it
 */
 require 'vendor/autoload.php';
-
 AssetsMinify::getInstance();
