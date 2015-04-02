@@ -4,8 +4,6 @@ namespace AssetsMinify\Assets;
 use Assetic\Filter\MinifyCssCompressorFilter;
 use Assetic\Filter\CssRewriteFilter;
 
-//use Minify_CSSmin;
-
 /**
  * Css Factory.
  * Manages the styles (Css and sass, scss, stylus, less)
@@ -50,6 +48,11 @@ class Css extends Factory {
 			if ( !file_exists($style_path) )
 				continue;
 
+			//Separation of stylesheets enqueue using different media
+			$media = $wp_styles->registered[$handle]->args;
+			if ( $media  == '' )
+				$media = 'all';
+
 			//Separation between preprocessors and css stylesheets
 			$ext = 'css';
 			$parts = explode('.', $style_path);
@@ -57,8 +60,8 @@ class Css extends Factory {
 				$ext = $parts[ count($parts) - 1 ];
 			}
 
-			$this->assets[$ext]['files'][$handle] = $style_path;
-			$this->assets[$ext]['mtimes'][$handle] = filemtime($style_path);
+			$this->assets[$media][$ext]['files'][$handle] = $style_path;
+			$this->assets[$media][$ext]['mtimes'][$handle] = filemtime($style_path);
 
 			//Removes css from the queue so this plugin will be
 			//responsible to include all the stylesheets except other domains ones.
@@ -74,44 +77,51 @@ class Css extends Factory {
 	 * Takes all the stylesheets and manages their queue to compress them
 	 */
 	public function generate() {
-		foreach ( $this->assets as $ext => $content ) {
-			$mtime = md5( json_encode($content) );
-			$cachefile = "$ext-$mtime.css";
+		foreach ( $this->assets as $media => $assets ) {
+			foreach ( $assets as $ext => $content ) {
+				$mtime = md5( json_encode($content) );
+				$cachefile = "$media-$ext-$mtime.css";
 
-			if ( !$this->cache->fs->has( $cachefile ) ) {
-				$class = "AssetsMinify\\Assets\\Css\\" . ucfirst($ext);
-				new $class( $content['files'], $cachefile, $this );
+				if ( !$this->cache->fs->has( $cachefile ) ) {
+					$class = "AssetsMinify\\Assets\\Css\\" . ucfirst($ext);
+					new $class( $content['files'], $cachefile, $this );
+				}
+
+				$key = "$media-$ext-am-generated";
+				$this->files[$media][$key] = $this->cache->getPath() . $cachefile;
+				$this->mtimes[$media][$key] = filemtime($this->files[$media][$key]);
 			}
-
-			$key = "$ext-am-generated";
-			$this->files[$key] = $this->cache->getPath() . $cachefile;
-			$this->mtimes[$key] = filemtime($this->files[$key]);
 		}
 
 		if ( empty($this->files) )
 			return false;
 
-		$mtime = md5( json_encode($this->mtimes) );
+		foreach ( $this->files as $media => $files) {
+			$mtime = md5( json_encode($this->mtimes[$media]) );
 
-		//Saves the asseticized stylesheets
-		if ( !$this->cache->fs->has( "head-{$mtime}.css" ) ) {
-			$cssDump = str_replace('../', '/', $this->createAsset( $this->files, $this->getFilters() )->dump() );
-			$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
-			$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
-			$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
-			$this->cache->fs->set( "head-{$mtime}.css", $cssDump );
+			//Saves the asseticized stylesheets
+			$cachedFilename = "head-$media-$mtime.css";
+
+			if ( !$this->cache->fs->has( $cachedFilename ) ) {
+				$cssDump = str_replace('../', '/', $this->createAsset( $files, $this->getFilters() )->dump() );
+				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
+				$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
+				$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
+				$this->cache->fs->set( $cachedFilename, $cssDump );
+			}
+
+			//Prints css inclusion in the page
+			$this->dump( $cachedFilename, $media );
 		}
-
-		//Prints css inclusion in the page
-		$this->dump( "head-{$mtime}.css" );
 	}
 
 	/**
 	 * Prints <link> tag to include the CSS
-	 * 
+	 *
 	 * @param string $filename The filename to dump
+	 * @param string $media The media attribute - Default = all
 	 */
-	protected function dump( $filename ) {
-		echo "<link href='" . $this->cache->getUrl() . $filename . "' media='screen, projection' rel='stylesheet' type='text/css'>";
+	protected function dump( $filename, $media = 'all' ) {
+		echo "<link href='" . $this->cache->getUrl() . $filename . "' media='$media' rel='stylesheet' type='text/css'>";
 	}
 }
