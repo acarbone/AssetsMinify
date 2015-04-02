@@ -14,7 +14,6 @@ Todo
 ### Enhancement
 
 - [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
-- [Allow different media types](https://wordpress.org/support/topic/media-type)
 - [Allow to exclude css/js](https://github.com/acarbone/AssetsMinify/issues/21), [2](https://github.com/acarbone/AssetsMinify/issues/22)
 - Reorganize the admin page
 - Write script to help manage git->svn repo (only some files need to be copied)
@@ -46,3 +45,4 @@ Done
 
 - [SASS Placeholder support](https://wordpress.org/support/topic/scss-compiler-chokes-on-placeholder-selectors)
 - Enable SASS, not only SCSS
+- [Allow different media types](https://wordpress.org/support/topic/media-type)
