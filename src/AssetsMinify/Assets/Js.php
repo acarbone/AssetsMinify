@@ -1,7 +1,7 @@
 <?php
 namespace AssetsMinify\Assets;
 
-use Assetic\Filter\JSMinFilter;
+use Assetic\Filter\JSqueezeFilter;
 use Assetic\Asset\StringAsset;
 
 /**
@@ -18,7 +18,7 @@ class Js extends Factory {
 			  $localized = array();
 
 	public function setFilters() {
-		$this->setFilter('JSMin', new JSMinFilter);
+		$this->setFilter('JSqueeze', new JSqueezeFilter);
 	}
 
 	/**
@@ -139,9 +139,7 @@ class Js extends Factory {
 			$data .= $script;
 		}
 
-		//var_Dump($this->localized);
-		$asset = new StringAsset( $data, array(new JSMinFilter) );
-
+		$asset = new StringAsset( $data, array(new JSqueezeFilter) );
 		return $asset->dump();
 	}
 
