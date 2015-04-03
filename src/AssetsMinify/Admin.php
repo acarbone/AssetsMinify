@@ -40,7 +40,7 @@ class Admin {
 	}
 
 	/**
-	 * Empties AM's cache
+	 * Flushes AM's cache
 	 */
 	public function emptyCache() {
 		$uploadsDir = wp_upload_dir();

@@ -7,7 +7,8 @@ class LogTest extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		$this->log = new Log;
+		$this->cache = new AssetsMinify\Cache;
+		$this->log = new Log($this->cache);
 	}
 
 	public function testInitialization() {
@@ -16,13 +17,17 @@ class LogTest extends WP_UnitTestCase {
 
 	public function testActivation() {
 		update_option('am_log', 1);
-		$log = new Log;
+		$log = new Log($this->cache);
 		$this->assertTrue( $log->isActive() );
 	}
 
 	public function testDeactivation() {
 		update_option('am_log', 0);
-		$log = new Log;
+		$log = new Log($this->cache);
 		$this->assertFalse( $log->isActive() );
+	}
+
+	public function testLogFileExists() {
+		$this->assertTrue( file_exists($this->cache->getPath() . Log::$filename) );
 	}
 }
