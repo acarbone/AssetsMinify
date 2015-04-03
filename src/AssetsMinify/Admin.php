@@ -5,7 +5,7 @@ use AssetsMinify\Cache;
 
 /**
  * Admin's page manager.
- * Prints out every field managed from AssetsMinify's admin page 
+ * Prints out every field managed from AssetsMinify's admin page
  *
  * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
@@ -23,6 +23,7 @@ class Admin {
 		'am_compress_styles',
 		'am_compress_scripts',
 		'am_files_to_exclude',
+		'am_log',
 	);
 
 	/**

@@ -12,7 +12,7 @@ class JsTest extends WP_UnitTestCase {
 	public function testFilters() {
 		$filters = $this->js->getFilters();
 		$this->assertTrue( is_array($filters) );
-		$this->assertEquals( 'JSMin', $filters[0] );
+		$this->assertEquals( 'JSqueeze', $filters[0] );
 		$this->assertFalse( isset($filters[1]) );
 	}
 
@@ -55,7 +55,7 @@ class JsTest extends WP_UnitTestCase {
 		$footer = ob_get_clean();
 
 		$rawJs = 'var localizeVar = {"var":"value"};';
-		$minfiedJs = 'var localizeVar={"var":"value"};';
+		$minfiedJs = "var localizeVar={'var':'value'};";
 
 		$this->assertSame( $rawJs, $wp_scripts->registered['localize']->extra['data'] );
 		$this->assertContains( $minfiedJs, $footer );

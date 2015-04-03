@@ -14,7 +14,6 @@ Todo
 ### Enhancement
 
 - [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
-- Compare JSMin to patchwork/jsqueeze
 - Compile log
 - [Should be used Cache Busting from Assetic?](https://github.com/kriswallsmith/assetic#user-content-cache-busting)
 - Reorganize the admin page
@@ -50,3 +49,4 @@ Done
 - Enable SASS, not only SCSS
 - [Allow different media types](https://wordpress.org/support/topic/media-type)
 - [Allow to exclude css/js](https://github.com/acarbone/AssetsMinify/issues/21)
+- Updated JSMin to patchwork/jsqueeze
