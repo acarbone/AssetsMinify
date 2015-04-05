@@ -28,6 +28,9 @@ class Init {
 		$this->js = new Js($this);
 		$this->css = new Css($this);
 
+		// Log manager
+		$this->log = \AssetsMinify\Log::getInstance($this->cache);
+
 		$this->exclusions = preg_split('/[ ]*,[ ]*/', trim(get_option('am_files_to_exclude')));
 
 		//Detects all js and css added to WordPress and removes their inclusion

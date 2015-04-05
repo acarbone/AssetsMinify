@@ -4,6 +4,8 @@ namespace AssetsMinify\Assets;
 use Assetic\Filter\MinifyCssCompressorFilter;
 use Assetic\Filter\CssRewriteFilter;
 
+use AssetsMinify\Log;
+
 /**
  * Css Factory.
  * Manages the styles (Css and sass, scss, stylus, less)
@@ -29,6 +31,8 @@ class Css extends Factory {
 
 		if ( empty($wp_styles->queue) )
 			return;
+
+		Log::getInstance()->info('Css extraction - START');
 
 		// Trigger dependency resolution
 		$wp_styles->all_deps($wp_styles->queue);
@@ -71,14 +75,18 @@ class Css extends Factory {
 			$wp_styles->done[] = $handle;
 			unset($wp_styles->to_do[$key]);
 		}
+		Log::getInstance()->info('Css extraction - END');
 	}
 
 	/**
 	 * Takes all the stylesheets and manages their queue to compress them
 	 */
 	public function generate() {
+		Log::getInstance()->info('Css minification - START');
+
 		foreach ( $this->assets as $media => $assets ) {
 			foreach ( $assets as $ext => $content ) {
+				Log::getInstance()->info( sprintf('CSS %s, %s minification - START', $media, $ext) );
 				$mtime = md5( json_encode($content) );
 				$cachefile = "$media-$ext-$mtime.css";
 
@@ -90,6 +98,7 @@ class Css extends Factory {
 				$key = "$media-$ext-am-generated";
 				$this->files[$media][$key] = $this->cache->getPath() . $cachefile;
 				$this->mtimes[$media][$key] = filemtime($this->files[$media][$key]);
+				Log::getInstance()->info( sprintf('CSS %s, %s minification - END', $media, $ext) );
 			}
 		}
 
@@ -97,6 +106,7 @@ class Css extends Factory {
 			return false;
 
 		foreach ( $this->files as $media => $files) {
+			Log::getInstance()->info( sprintf('CSS %s dump - START', $media) );
 			$mtime = md5( json_encode($this->mtimes[$media]) );
 
 			//Saves the asseticized stylesheets
@@ -112,7 +122,10 @@ class Css extends Factory {
 
 			//Prints css inclusion in the page
 			$this->dump( $cachedFilename, $media );
+			Log::getInstance()->info( sprintf('CSS %s dump - END', $media) );
 		}
+
+		Log::getInstance()->info('Css minification - END');
 	}
 
 	/**

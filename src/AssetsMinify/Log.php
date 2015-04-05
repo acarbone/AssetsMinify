@@ -60,9 +60,14 @@ class Log extends Pattern\Singleton {
 	 * Log an info level message.
 	 *
 	 * @param string $message The message to log
+	 * @return boolean True if log has been written, only if logging is enabled
 	 */
 	public function info($message) {
+		if ( !$this->isActive() )
+			return false;
+
 		$this->logger->info($message);
+		return true;
 	}
 
 	/**
@@ -71,7 +76,7 @@ class Log extends Pattern\Singleton {
 	 * @return array
 	 */
 	public function getAll() {
-		return new LogReader($this->getFilePath());
+		return new LogReader( $this->getFilePath() );
 	}
 
 	/**
