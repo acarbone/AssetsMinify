@@ -7,8 +7,9 @@ class LogTest extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
+		update_option('am_log', 1);
 		$this->cache = new AssetsMinify\Cache;
-		$this->log = new Log($this->cache);
+		$this->log = Log::getInstance($this->cache);
 	}
 
 	public function testInitialization() {
@@ -16,18 +17,28 @@ class LogTest extends WP_UnitTestCase {
 	}
 
 	public function testActivation() {
-		update_option('am_log', 1);
-		$log = new Log($this->cache);
+		$this->assertTrue( $this->log->isActive() );
+	}
+
+	// No new instance
+	public function testSingletonProtection() {
+		update_option('am_log', 0);
+		$cache = new AssetsMinify\Cache;
+		$log = Log::getInstance($cache);
 		$this->assertTrue( $log->isActive() );
 	}
 
-	public function testDeactivation() {
-		update_option('am_log', 0);
-		$log = new Log($this->cache);
-		$this->assertFalse( $log->isActive() );
+	public function testLogFileExists() {
+		$this->log->info('First message');
+		$this->assertTrue( file_exists($this->log->getFilePath()) );
 	}
 
-	public function testLogFileExists() {
-		$this->assertTrue( file_exists($this->cache->getPath() . Log::$filename) );
+	public function testLogInfo() {
+		$msg = 'This is the text error';
+		$this->log->info($msg);
+		$rows = $this->log->getAll();
+
+		$last = $rows->offsetGet( $rows->count() - 2 );
+		$this->assertEquals( $last['message'], $msg );
 	}
 }

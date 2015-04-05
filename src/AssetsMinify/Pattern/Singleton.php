@@ -23,7 +23,7 @@ abstract class Singleton {
 		$calledClass = get_called_class();
 
 		if ( !isset($instances[$calledClass]) ) {
-			$instances[$calledClass] = new $calledClass();
+			$instances[$calledClass] = new $calledClass(func_get_args());
 		}
 
 		return $instances[$calledClass];

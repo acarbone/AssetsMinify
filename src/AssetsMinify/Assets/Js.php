@@ -18,7 +18,7 @@ class Js extends Factory {
 			  $localized = array();
 
 	public function setFilters() {
-		$this->setFilter('JSqueeze', new JSqueezeFilter);
+		$this->setFilter( 'JSqueeze', new JSqueezeFilter );
 	}
 
 	/**

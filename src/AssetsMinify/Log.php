@@ -4,15 +4,19 @@ namespace AssetsMinify;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+use Dubture\Monolog\Reader\LogReader;
+
 /**
  * Log Manager.
  * It's the manager for every log operation.
  *
  * @author Alessandro Carbone <ale.carbo@gmail.com>
  */
-class Log {
+class Log extends Pattern\Singleton {
 
-	protected $active;
+	protected $active,
+			  $cache,
+			  $logger;
 
 	public static $filename = 'compile.log';
 
@@ -22,8 +26,13 @@ class Log {
 	 * @param object $cache The cache instance
 	 * @return false if logging is disabled
 	 */
-	public function __construct($cache) {
+	protected function __construct($params) {
 		$this->active = get_option('am_log', 0) == true;
+
+		if ( empty($params) )
+			return false;
+
+		$cache = $params[0];
 
 		if ( !$cache )
 			return false;
@@ -35,9 +44,34 @@ class Log {
 
 		// create a log channel
 		$this->logger = new Logger('Compile');
-		$this->logger->pushHandler( new StreamHandler( $this->cache->getPath() . self::$filename, Logger::WARNING ) );
+		$this->logger->pushHandler( new StreamHandler( $this->getFilePath(), Logger::DEBUG ) );
+	}
 
-		$this->logger->addWarning('asd');
+	/**
+	 * The path of the log file 
+	 *
+	 * @param string
+	 */
+	public function getFilePath() {
+		return $this->cache->getPath() . self::$filename;
+	}
+
+	/**
+	 * Log an info level message.
+	 *
+	 * @param string $message The message to log
+	 */
+	public function info($message) {
+		$this->logger->info($message);
+	}
+
+	/**
+	 * Get all saved logs
+	 *
+	 * @return array
+	 */
+	public function getAll() {
+		return new LogReader($this->getFilePath());
 	}
 
 	/**

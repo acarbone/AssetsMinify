@@ -16,8 +16,9 @@
 		"leafo/scssphp": "dev-master",
 		"ptachoire/cssembed": "dev-master",
 		"leafo/scssphp-compass": "dev-master",
-		"patchwork/jsqueeze": "dev-master",
+        "patchwork/jsqueeze": "~1.0",
 		"mrclay/minify": "dev-master",
-        "monolog/monolog": "~1.13"
+        "monolog/monolog": "~1.13",
+        "pulse00/monolog-parser": "dev-master"
 	}
 }
