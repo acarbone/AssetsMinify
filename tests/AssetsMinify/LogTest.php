@@ -7,7 +7,6 @@ class LogTest extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		update_option('am_log', 1);
 		$this->cache = new AssetsMinify\Cache;
 		$this->log = Log::getInstance($this->cache);
 	}

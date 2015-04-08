@@ -27,7 +27,7 @@ class Log extends Pattern\Singleton {
 	 * @return false if logging is disabled
 	 */
 	protected function __construct($params) {
-		$this->active = get_option('am_log', 0) == true;
+		$this->active = get_option('am_log', 0) == 1;
 
 		if ( empty($params) )
 			return false;
