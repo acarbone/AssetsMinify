@@ -42,6 +42,8 @@ class Log extends Pattern\Singleton {
 
 		$this->cache = $cache;
 
+		$this->checkSize();
+
 		// create a log channel
 		$this->logger = new Logger('Compile');
 		$this->logger->pushHandler( new StreamHandler( $this->getFilePath(), Logger::DEBUG ) );
@@ -54,6 +56,28 @@ class Log extends Pattern\Singleton {
 	 */
 	public function getFilePath() {
 		return $this->cache->getPath() . self::$filename;
+	}
+
+	/**
+	 * The path of the log file 
+	 *
+	 * @param string
+	 */
+	public function checkSize() {
+		$filepath = $this->getFilePath();
+
+		if ( filesize($filepath) > 10000000 )
+			$this->flush();
+	}
+
+	/**
+	 * Flush the log
+	 *
+	 * @return boolean True if log has been flushed
+	 */
+	public function flush() {
+		unlink($this->getFilePath());
+		return true;
 	}
 
 	/**

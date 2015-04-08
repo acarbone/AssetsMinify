@@ -80,6 +80,14 @@
 					</th>
 					<td>
 						<input name="am_log" type="checkbox" id="am_log" value="1" <?php checked(1, get_option('am_log')); ?>>
+						<?php
+						$logging = get_option('am_log');
+						if ( $logging === '1' ):
+						?>
+							<div>
+								<span class="description"><?php echo \AssetsMinify\Log::$filename ?> will flush automatically if its weight is 10Mb.</span>
+							</div>
+						<?php endif ?>
 					</td>
 				</tr>
 			</tbody>
