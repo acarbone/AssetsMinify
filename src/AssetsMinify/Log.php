@@ -16,7 +16,8 @@ class Log extends Pattern\Singleton {
 
 	protected $active,
 			  $cache,
-			  $logger;
+			  $logger,
+			  $storage;
 
 	public static $filename = 'compile.log';
 
@@ -66,7 +67,7 @@ class Log extends Pattern\Singleton {
 	public function checkSize() {
 		$filepath = $this->getFilePath();
 
-		if ( filesize($filepath) > 10000000 )
+		if ( file_exists($filepath) && filesize($filepath) > 10000000 )
 			$this->flush();
 	}
 
@@ -110,5 +111,49 @@ class Log extends Pattern\Singleton {
 	 */
 	public function isActive() {
 		return $this->active;
+	}
+
+	/**
+	 * Store a key, value pair
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return string The set value
+	 */
+	public function set($key, $value) {
+		$this->storage[$key] = $value;
+		return $value;
+	}
+
+	/**
+	 * Retrieve a value saved within storage
+	 *
+	 * @param string $key
+	 * @return mixed False if key isn't set else the value
+	 */
+	public function get($key) {
+		return isset($this->storage[$key]) ? $this->storage[$key] : false;
+	}
+
+	/**
+	 * Log the storage's content profiling the timing performances saved within it
+	 *
+	 * @return true
+	 */
+	public function dumpStorage() {
+		foreach ( $this->storage as $key => $value ) {
+			$line = "$key: ";
+			if ( is_string($value) ) {
+				$line .= $value;
+			} else if ( is_array($value) && count($value) === 2 ) {
+				$line .= ($value[1] - $value[0]) . "s";
+			} else {
+				$line .= json_encode($value);
+			}
+			$this->info($line);
+		}
+
+		$this->storage = array();
+		return true;
 	}
 }

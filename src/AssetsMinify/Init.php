@@ -71,5 +71,7 @@ class Init {
 	 */
 	public function footer() {
 		$this->js->generate('footer');
+		if ( $this->cache->isUpdated() )
+			Log::getInstance()->dumpStorage();
 	}
 }

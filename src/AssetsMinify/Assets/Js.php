@@ -32,7 +32,7 @@ class Js extends Factory {
 		if ( empty($wp_scripts->queue) )
 			return;
 
-		Log::getInstance()->info('Js extraction - START');
+		$profiler = array( time() );
 
 		// Trigger dependency resolution
 		$wp_scripts->all_deps($wp_scripts->queue);
@@ -77,7 +77,8 @@ class Js extends Factory {
 			$wp_scripts->done[] = $handle;
 			unset($wp_scripts->to_do[$key]);
 		}
-		Log::getInstance()->info('Js extraction - END');
+		$profiler []= time();
+		Log::getInstance()->set( 'Js extraction', $profiler );
 	}
 
 	/**
@@ -86,10 +87,9 @@ class Js extends Factory {
 	 * @param string $where The page's place to dump the scripts in (header or footer)
 	 */
 	public function generate($where) {
-		Log::getInstance()->info( sprintf('Js %s minification - START', $where) );
+		$profiler = array( time() );
 
 		foreach ( $this->assets[$where] as $ext => $content ) {
-			Log::getInstance()->info( sprintf('Js %s, %s minification - START', $where, $ext) );
 			$mtime = md5( json_encode($content) );
 			$cachefile = "$where-$ext-$mtime.js";
 
@@ -101,7 +101,6 @@ class Js extends Factory {
 			$key = "$ext-am-generated";
 			$this->files[$where][$key] = $this->cache->getPath() . $cachefile;
 			$this->mtimes[$where][$key] = filemtime($this->files[$where][$key]);
-			Log::getInstance()->info( sprintf('Js %s, %s minification - END', $where, $ext) );
 		}
 
 		if ( empty($this->files[$where]) )
@@ -112,6 +111,7 @@ class Js extends Factory {
 		//Saves the asseticized header scripts
 		if ( !$this->cache->fs->has( "$where-$mtime.js" ) ) {
 			$this->cache->fs->set( "$where-$mtime.js", $this->createAsset( $this->files[$where], $this->getFilters() )->dump() );
+			$this->cache->update();
 		}
 
 		//Prints <script> inclusion in the page
@@ -121,7 +121,8 @@ class Js extends Factory {
 			$async = true;
 		$this->dump( "$where-$mtime.js", $async );
 
-		Log::getInstance()->info( sprintf('Js %s minification - END', $where) );
+		$profiler []= time();
+		Log::getInstance()->set( 'Js minification', $profiler );
 	}
 
 	/**

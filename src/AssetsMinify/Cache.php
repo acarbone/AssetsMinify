@@ -13,7 +13,8 @@ class Cache {
 
 	protected $path,
 		$url,
-		$wp_upload_dir;
+		$wp_upload_dir,
+		$updated = false;
 
 	public static $directory = 'am_assets';
 	public $fs,
@@ -63,5 +64,23 @@ class Cache {
 	 */
 	public function getUrl() {
 		return $this->url;
+	}
+
+	/**
+	 * Sets the updated status for the cache
+	 *
+	 * @return true
+	 */
+	public function update() {
+		return $this->updated = true;
+	}
+
+	/**
+	 * Gets the cache status
+	 *
+	 * @return boolean True if cache has been updated
+	 */
+	public function isUpdated() {
+		return $this->updated;
 	}
 }

@@ -24,4 +24,10 @@ class CacheTest extends WP_UnitTestCase {
 		$this->assertInstanceOf('Assetic\Cache\FilesystemCache', $this->plugin->fs);
 		$this->assertInstanceOf('AssetsMinify\Cache\GarbageCollector', $this->plugin->gc);
 	}
+
+	public function testStatus() {
+		$this->assertFalse( $this->plugin->isUpdated() );
+		$this->plugin->update();
+		$this->assertTrue( $this->plugin->isUpdated() );
+	}
 }

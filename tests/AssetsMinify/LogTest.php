@@ -40,4 +40,22 @@ class LogTest extends WP_UnitTestCase {
 		$last = $rows->offsetGet( $rows->count() - 2 );
 		$this->assertEquals( $last['message'], $msg );
 	}
+
+	public function testLogStorage() {
+		$msg = 'This is the text error';
+		$this->log->set('message', $msg);
+		$this->assertEquals( $this->log->get('message'), $msg );
+	}
+
+	public function testLogDumpStorage() {
+		$time = time();
+		$key = 'message';
+		$this->log->set( $key, array( $time, $time ) );
+		$this->log->dumpStorage();
+
+		$rows = $this->log->getAll();
+		$last = $rows->offsetGet( $rows->count() - 2 );
+
+		$this->assertEquals( $last['message'], "$key: 0s" );
+	}
 }
