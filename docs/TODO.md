@@ -13,10 +13,7 @@ Todo
 
 ### Enhancement
 
-- [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
-- Compile log
 - [Should be used Cache Busting from Assetic?](https://github.com/kriswallsmith/assetic#user-content-cache-busting)
-- Reorganize the admin page
 - Autoprefixer?
 
 ### Utility
@@ -27,6 +24,11 @@ Todo
 
 - Image optimization tool: default flag? Helper function for coding themes?
 - Analyze better optimizations to speed up WP (https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer)
+
+### Standby
+
+- [Allow CDN configuration for assets inclusion](https://github.com/acarbone/AssetsMinify/issues/23)
+- [WooCommerce compatibility](https://github.com/acarbone/AssetsMinify/issues/25)
 
 
 Done
@@ -51,3 +53,4 @@ Done
 - [Allow different media types](https://wordpress.org/support/topic/media-type)
 - [Allow to exclude css/js](https://github.com/acarbone/AssetsMinify/issues/21)
 - Updated JSMin to patchwork/jsqueeze
+- Compile log
