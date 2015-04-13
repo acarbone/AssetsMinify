@@ -30,4 +30,12 @@ class CacheTest extends WP_UnitTestCase {
 		$this->plugin->update();
 		$this->assertTrue( $this->plugin->isUpdated() );
 	}
+
+	public function testEmptyCache() {
+		$uploadsDir = wp_upload_dir();
+		$cachedFilesBefore = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
+		$this->plugin->flush();
+		$cachedFilesAfter = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
+		$this->assertGreaterThanOrEqual( $cachedFilesAfter, $cachedFilesBefore );
+	}
 }

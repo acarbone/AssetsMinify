@@ -84,10 +84,17 @@
 						$logging = get_option('am_log');
 						if ( $logging === '1' ):
 						?>
-							<div>
-								<span class="description"><?php echo \AssetsMinify\Log::$filename ?> will flush automatically if its weight is 10Mb.</span>
-							</div>
+							<span class="description"><?php echo \AssetsMinify\Log::$filename ?> will flush automatically if its weight is 10Mb.</span>
 						<?php endif ?>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_dev_mode">Development Mode</label>
+					</th>
+					<td>
+						<input name="am_dev_mode" type="checkbox" id="am_dev_mode" value="1" <?php checked(1, get_option('am_dev_mode')); ?>>
+						<span class="description">If active, the cache will be flushed on every reload. DON'T USE THIS IN PRODUCTION!</span>
 					</td>
 				</tr>
 			</tbody>

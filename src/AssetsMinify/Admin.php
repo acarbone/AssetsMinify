@@ -24,29 +24,22 @@ class Admin {
 		'am_compress_scripts',
 		'am_files_to_exclude',
 		'am_log',
+		'am_dev_mode',
 	);
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
+		// Cache manager
+		$this->cache = new Cache;
+
 		add_action('admin_init', array( $this, 'options') );
 		add_action('admin_menu', array( $this, 'menu') );
 
 		if ( isset($_GET['empty_cache']) ) {
-			$this->emptyCache();
+			$this->cache->flush();
 			wp_redirect( admin_url( "options-general.php?page=assets-minify" ) );
-		}
-	}
-
-	/**
-	 * Flushes AM's cache
-	 */
-	public function emptyCache() {
-		$uploadsDir = wp_upload_dir();
-		$filesList = glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*");
-		if ( $filesList !== false ) {
-			array_map('unlink', $filesList);
 		}
 	}
 

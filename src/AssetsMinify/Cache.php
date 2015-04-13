@@ -83,4 +83,18 @@ class Cache {
 	public function isUpdated() {
 		return $this->updated;
 	}
+
+	/**
+	 * Flush the whole cache
+	 *
+	 * @return true
+	 */
+	public function flush() {
+		$uploadsDir = wp_upload_dir();
+		$filesList = glob($this->path . "*.*");
+		if ( $filesList !== false ) {
+			array_map('unlink', $filesList);
+		}
+		return true;
+	}
 }

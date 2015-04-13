@@ -21,12 +21,4 @@ class AdminTest extends WP_UnitTestCase {
 		$this->assertInternalType( "array", $this->admin->options() );
 		$this->assertGreaterThan( 0, count($this->admin->options()) );
 	}
-
-	public function testEmptyCache() {
-		$uploadsDir = wp_upload_dir();
-		$cachedFilesBefore = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
-		$this->admin->emptyCache();
-		$cachedFilesAfter = count(glob($uploadsDir['basedir'] . '/' . Cache::$directory . '/' . "*.*"));
-		$this->assertGreaterThanOrEqual( $cachedFilesAfter, $cachedFilesBefore );
-	}
 }

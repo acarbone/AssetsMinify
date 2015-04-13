@@ -24,6 +24,9 @@ class Init {
 		// Cache manager
 		$this->cache = new Cache;
 
+		if ( get_option('am_dev_mode', 0) )
+			$this->cache->flush();
+
 		// Assets managers for Js and Css
 		$this->js = new Js($this);
 		$this->css = new Css($this);
