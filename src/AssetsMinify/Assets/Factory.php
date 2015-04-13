@@ -77,7 +77,6 @@ abstract class Factory {
 	 * @return string
 	 */
 	public function guessPath( $file_url ) {
-
 		$components = parse_url($file_url);
 
 		// Check we have at least a path
@@ -89,7 +88,6 @@ abstract class Factory {
 		$wp_content_url = content_url();
 
 		// Script is enqueued from a plugin
-
 		$url_regex = $this->getUrlRegex($wp_plugin_url);
 		if( preg_match($url_regex, $file_url) > 0 )
 			$file_path = WP_PLUGIN_DIR . preg_replace($url_regex, '', $file_url);
@@ -113,7 +111,7 @@ abstract class Factory {
 	 * @return string The regular expression matching the URL.
 	 */
 	protected function getUrlRegex( $url ) {
-		$regex  = '@^' . str_replace( 'http\://','https?\:\/\/', preg_quote( $url )) . '@';
+		$regex  = '@^' . str_replace( 'http\://','(https?\:)?\/\/', preg_quote( $url )) . '@';
 		return $regex;
 	}
 }
