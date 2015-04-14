@@ -45,7 +45,11 @@ abstract class Factory {
 	 * @return object
 	 */
 	public function createAsset( $name, $value ) {
-		return $this->asset->createAsset( $name, $value);
+		return $this->asset->createAsset( $name, $value, array(
+				'root' => array( WP_CONTENT_DIR ),
+				'output' => 'uploads/am_assets/*'
+			)
+		);
 	}
 
 	/**
