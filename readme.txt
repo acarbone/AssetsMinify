@@ -22,20 +22,6 @@ AssetsMinify is based on Assetic library.
 
 [Fork me on Github](https://github.com/acarbone/AssetsMinify).
 
-
-
-= CoffeeScript (NEW FEATURE) =
-
-Now you can also include your CoffeeScript directly using wp_enqueue_script:
-
-`wp_enqueue_script( 'my-cs', get_template_directory_uri() . '/coffee/header.coffee', array(), '1.0' );`
-
-= Define inclusion-sets per-page =
-
-Although it is not a best practice you can define resources inclusions basing on the WordPress page just like this `if ( is_page( 2 ) ) { wp_enqueue_style( 'stylesheet-name' ); }`.
-
-
-
 == Installation ==
 
 1. Upload the `assetsminify` folder to the `/wp-content/plugins/` directory
