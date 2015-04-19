@@ -1,7 +1,7 @@
 === AssetsMinify ===
 Contributors: ale.carbo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=USTVFTWRP6DGW
-Tags: assets, minify, css, js, 3, sass, compass, coffeescript
+Tags: assets, minify, css, js, less, sass, compass, coffeescript
 Requires at least: 3.3
 Tested up to: 4.1.1
 License: GPLv2 or later
