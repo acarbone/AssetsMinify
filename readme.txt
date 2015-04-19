@@ -8,7 +8,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Stable tag: 2.0.0
 
-Use Compass, Sass, Less, Stylus, CoffeeScript (and more ...) to develop your themes and minify your stylesheets and JavaScript simply by installing AssetsMinify.
+Use Compass, Sass, Less, Stylus, CoffeeScript (and more ...) to develop your themes and minify your stylesheets and JavaScript.
 
 == Description ==
 
