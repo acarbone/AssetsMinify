@@ -14,5 +14,8 @@ TRUNK=$SVN/trunk
 svn delete $TRUNK/*
 cp -r $PLUGIN/* $TRUNK
 rm -rf $TRUNK/bin $TRUNK/docs $TRUNK/tests $TRUNK/.gitignore $TRUNK/.travis.yml $TRUNK/composer.json $TRUNK/composer.lock $TRUNK/phpunit.xml $TRUNK/.git
+find $SVN -type d -name ".git" -exec rm -rf {} +
+rm -rf $TRUNK/vendor/phpunit
+
 mkdir $SVN/tags/$VERSION
 cp -r $TRUNK/* $SVN/tags/$VERSION
