@@ -89,6 +89,9 @@ class Js extends Factory {
 	public function generate($where) {
 		$profiler = array( time() );
 
+		if ( !isset($this->assets[$where]) )
+			return false;
+
 		foreach ( $this->assets[$where] as $ext => $content ) {
 			$mtime = md5( json_encode($content) );
 			$cachefile = "$where-$ext-$mtime.js";
