@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 
 Use Compass, Sass, Less, Stylus, CoffeeScript (and more ...) to develop your themes and minify your stylesheets and JavaScript.
 
@@ -47,6 +47,10 @@ You can fill in the text field "Resources to exclude" within the admin page of t
 3. Set 777 permissions to you uploads directory
 
 == Changelog ==
+
+= 2.0.1 =
+
+* Fixed bug for minifying js assets
 
 = 2.0.0 =
 
