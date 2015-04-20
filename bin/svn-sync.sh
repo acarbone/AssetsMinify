@@ -11,7 +11,7 @@ PLUGIN=$( cd "$( dirname $( dirname "${BASH_SOURCE[0]}" ))" && pwd )
 SVN=$( cd "$( dirname "${PLUGIN}" )/svn" && pwd )
 TRUNK=$SVN/trunk
 
-svn delete $TRUNK/*
+rm -rf $TRUNK/*
 cp -r $PLUGIN/* $TRUNK
 rm -rf $TRUNK/bin $TRUNK/docs $TRUNK/tests $TRUNK/.gitignore $TRUNK/.travis.yml $TRUNK/composer.json $TRUNK/composer.lock $TRUNK/phpunit.xml $TRUNK/.git
 find $SVN -type d -name ".git" -exec rm -rf {} +
