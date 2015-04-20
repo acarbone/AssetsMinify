@@ -3,10 +3,10 @@ Contributors: ale.carbo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=USTVFTWRP6DGW
 Tags: assets, minify, css, js, less, sass, compass, coffeescript
 Requires at least: 3.3
-Tested up to: 4.1.1
+Tested up to: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 
 Use Compass, Sass, Less, Stylus, CoffeeScript (and more ...) to develop your themes and minify your stylesheets and JavaScript.
 
@@ -47,6 +47,11 @@ You can fill in the text field "Resources to exclude" within the admin page of t
 3. Set 777 permissions to you uploads directory
 
 == Changelog ==
+
+= 2.0.2 =
+
+* Bugfixing
+* Better compatibility with composer's WordPress installation
 
 = 2.0.1 =
 
