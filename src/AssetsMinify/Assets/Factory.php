@@ -16,6 +16,8 @@ abstract class Factory {
 	protected $filters = array(),
 			  $asset = null;
 
+	public $cache = null;
+
 	/**
 	 * Constructor
 	 *
@@ -23,7 +25,8 @@ abstract class Factory {
 	 */
 	public function __construct($manager) {
 		$this->manager = $manager;
-		$this->cache = $this->manager->cache;
+		if ( isset($this->manager->cache) )
+			$this->cache = $this->manager->cache;
 
 		$this->asset = new AssetFactory( ABSPATH );
 		$this->asset->setAssetManager( new AssetManager );
