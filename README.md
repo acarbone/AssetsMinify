@@ -1,7 +1,7 @@
 AssetsMinify
 ============
 
-[![Build Status](https://travis-ci.org/acarbone/AssetsMinify.svg?branch=dev)](https://travis-ci.org/acarbone/AssetsMinify)
+[![Build Status](https://travis-ci.org/acarbone/AssetsMinify.svg?branch=master)](https://travis-ci.org/acarbone/AssetsMinify)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/acarbone/assetsminify/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 AssetsMinify is a [WordPress plugin](http://wordpress.org/extend/plugins/assetsminify/) based on [Assetic library](https://github.com/kriswallsmith/assetic) to let using Compass, Sass, Less, CoffeeScript (and more ...) for developing themes and for minifying JS and CSS resources.
