@@ -18,6 +18,11 @@ class Init {
 	protected $exclusions;
 
 	/**
+	 * @var array
+	 */
+	private $params = null;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -48,6 +53,13 @@ class Init {
 	}
 
 	/**
+	 * @param array $param Keyed array with settings for various Assetic classes.
+	 */
+	public function setParams($params) {
+		$this->params = $params;
+	}
+
+	/**
 	 * Checks if a file is within the list of resources to exclude
 	 *
 	 * @param string $path The file path
@@ -65,15 +77,15 @@ class Init {
 	 * Returns header's inclusion for CSS and JS
 	 */
 	public function header() {
-		$this->css->generate();
-		$this->js->generate('header');
+		$this->css->generate($this->params);
+		$this->js->generate('header', $this->params);
 	}
 
 	/**
 	 * Returns footer's inclusion for JS
 	 */
 	public function footer() {
-		$this->js->generate('footer');
+		$this->js->generate('footer', $this->params);
 		if ( $this->cache->isUpdated() )
 			Log::getInstance()->dumpStorage();
 	}
