@@ -12,14 +12,20 @@ use Assetic\Filter\CssRewriteFilter;
  */
 class Scss extends \AssetsMinify\Assets\Factory {
 	/**
+	 * @var array
+	 */
+	private $params = null;
+
+	/**
 	 * Constructor
 	 * 
 	 * @param array $content The files to save to cache
 	 * @param string $cachefile The cache file name
 	 * @param object $manager The Factory object
 	 */
-	public function __construct($content, $cachefile, $manager) {
+	public function __construct($content, $cachefile, $manager, $params = null) {
 		$this->manager = $manager;
+		$this->params = $params;
 		parent::__construct( $this );
 		$manager->cache->fs->set( $cachefile, $this->createAsset( $content, $this->getFilters() )->dump() );
 	}
@@ -34,7 +40,21 @@ class Scss extends \AssetsMinify\Assets\Factory {
 			$this->setFilter('Compass', $compassInstance);
 			$filter = 'Compass';
 		} else {
-			$this->setFilter('Scssphp', new ScssphpFilter);
+			$scssphpFilter = new ScssphpFilter();
+
+			if ( is_array($this->params) ) {
+				if ( ! empty($this->params['addImportPath']) ) {
+					if ( is_array($this->params['addImportPath'] ) ) {
+						foreach ( $this->params['addImportPath'] as $value ) {
+							$scssphpFilter->addImportPath($value);
+						}
+					} else {
+						$scssphpFilter->addImportPath($this->params['addImportPath']);
+					}
+				}
+			}
+
+			$this->setFilter('Scssphp', $scssphpFilter);
 			$filter = 'Scssphp';
 		}
 

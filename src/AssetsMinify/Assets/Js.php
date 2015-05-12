@@ -85,8 +85,9 @@ class Js extends Factory {
 	 * Takes all the JavaScript and manages the queue to compress them
 	 *
 	 * @param string $where The page's place to dump the scripts in (header or footer)
+	 * @param array $param Keyed array with settings for various Assetic classes.
 	 */
-	public function generate($where) {
+	public function generate($where, $params = null) {
 		$profiler = array( time() );
 
 		if ( !isset($this->assets[$where]) )
@@ -98,7 +99,7 @@ class Js extends Factory {
 
 			if ( !$this->cache->fs->has( $cachefile ) ) {
 				$class = "AssetsMinify\\Assets\\Js\\" . ucfirst($ext);
-				new $class( $content['files'], $cachefile, $this );
+				new $class( $content['files'], $cachefile, $this, $params );
 			}
 
 			$key = "$ext-am-generated";

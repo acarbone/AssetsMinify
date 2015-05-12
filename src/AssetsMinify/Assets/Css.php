@@ -81,8 +81,10 @@ class Css extends Factory {
 
 	/**
 	 * Takes all the stylesheets and manages their queue to compress them
+	 *
+	 * @param array $param Keyed array with settings for various Assetic classes.
 	 */
-	public function generate() {
+	public function generate($params = null) {
 		$profiler = array( time() );
 
 		foreach ( $this->assets as $media => $assets ) {
@@ -92,7 +94,7 @@ class Css extends Factory {
 
 				if ( !$this->cache->fs->has( $cachefile ) ) {
 					$class = "AssetsMinify\\Assets\\Css\\" . ucfirst($ext);
-					new $class( $content['files'], $cachefile, $this );
+					new $class( $content['files'], $cachefile, $this, $params );
 				}
 
 				$key = "$media-$ext-am-generated";
