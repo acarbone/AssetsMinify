@@ -39,12 +39,14 @@ class Init {
 		//Detects all js and css added to WordPress and removes their inclusion
 		if( get_option('am_compress_styles', 1) )
 			add_action( 'wp_print_styles',  array( $this->css, 'extract' ) );
-		if( get_option('am_compress_scripts', 1) )
+		if( get_option('am_compress_scripts', 1) ) {
 			add_action( 'wp_print_scripts', array( $this->js, 'extract' ) );
+			add_action( 'wp_print_footer_scripts', array( $this->js, 'extract' ), 5 );
+		}
 
 		//Inclusion of scripts in <head> and before </body>
 		add_action( 'wp_head',   array( $this, 'header' ) );
-		add_action( 'wp_footer', array( $this, 'footer' ) );
+		add_action( 'wp_print_footer_scripts', array( $this, 'footer' ), 6 );
 	}
 
 	/**
