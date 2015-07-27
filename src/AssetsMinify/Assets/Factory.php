@@ -118,7 +118,7 @@ abstract class Factory {
 	 * @return string The regular expression matching the URL.
 	 */
 	protected function getUrlRegex( $url ) {
-		$regex  = '@^' . str_replace( 'http\://','(https?\:)?\/\/', preg_quote( $url )) . '@';
+		$regex  = '@^' . str_replace( array( 'https\://', 'http\://' ), '(https?\:)?\/\/', preg_quote( $url )) . '@';
 		return $regex;
 	}
 }
