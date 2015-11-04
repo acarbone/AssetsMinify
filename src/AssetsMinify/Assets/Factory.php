@@ -50,7 +50,7 @@ abstract class Factory {
 	public function createAsset( $name, $value ) {
 		return $this->asset->createAsset( $name, $value, array(
 				'root' => array( WP_CONTENT_DIR ),
-				'output' => 'uploads/am_assets/*'
+				'output' => is_multisite() && get_current_blog_id() != 1 ? 'uploads/sites/*/am_assets/*' : 'uploads/am_assets/*'
 			)
 		);
 	}
