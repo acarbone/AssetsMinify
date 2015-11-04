@@ -111,7 +111,7 @@ class Css extends Factory {
 			$cachedFilename = "head-$media-$mtime.css";
 
 			if ( !$this->cache->fs->has( $cachedFilename ) ) {
-				$cssDump = $this->createAsset( $files, $this->getFilters() )->dump();
+				$cssDump = $this->createAsset( $files, array( 'CssMin') )->dump();
 				$cssDump = str_replace( 'url(/wp-', 'url(' . site_url() . '/wp-', $cssDump );
 				$cssDump = str_replace( 'url("/wp-', 'url("' . site_url() . '/wp-', $cssDump );
 				$cssDump = str_replace( "url('/wp-", "url('" . site_url() . "/wp-", $cssDump );
