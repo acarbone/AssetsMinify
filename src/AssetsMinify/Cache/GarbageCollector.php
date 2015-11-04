@@ -26,9 +26,9 @@ class GarbageCollector {
 		//Every {$period} days the cache is refreshed
 		if ( get_option( self::$code, 0 ) <= time() - $this->offset ) {
 			$this->refresh();
-		}
 
-		update_option( self::$code, time() );
+			update_option( self::$code, time() );
+		}
 	}
 
 	/**
