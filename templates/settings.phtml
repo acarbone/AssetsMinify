@@ -1,75 +1,106 @@
 <div class="wrap">
-    <div class="icon32" id="icon-options-general"><br></div>
-    <h2>AssetsMinify's configuration</h2>
-    <p>&nbsp;</p>
-    <form method="post" action="options.php">
-        <?php settings_fields('am_options_group'); ?>
-        <table class="form-table">
-            <tbody>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_use_compass">Use Compass</label>
-                    </th>
-                    <td>
-                        <input name="am_use_compass" type="checkbox" id="am_use_compass" value="1" <?php checked(1, get_option('am_use_compass')); ?>>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_compass_path">Compass compiler's path</label>
-                    </th>
-                    <td>
-                        <input name="am_compass_path" type="text" id="am_compass_path" value="<?php echo get_option('am_compass_path', '/usr/bin/compass') ?>" class="regular-text">
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_coffeescript_path">CoffeeScript compiler's path</label>
-                    </th>
-                    <td>
-                        <input name="am_coffeescript_path" type="text" id="am_coffeescript_path" value="<?php echo get_option('am_coffeescript_path', '/usr/bin/coffee') ?>" class="regular-text">
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_compress_styles">Compress styles</label>
-                    </th>
-                    <td>
-                        <input name="am_compress_styles" type="checkbox" id="am_compress_styles" value="1" <?php checked(1, get_option('am_compress_styles', 1)); ?>>
-                        <span class="description">Use with care! Some background-images may not be displayed if running a WordPress unusual environment.</span>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_compress_scripts">Compress scripts</label>
-                    </th>
-                    <td>
-                        <input name="am_compress_scripts" type="checkbox" id="am_compress_scripts" value="1" <?php checked(1, get_option('am_compress_scripts', 1)); ?>>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_async_flag">Async attribute on footer's script tag</label>
-                    </th>
-                    <td>
-                        <input name="am_async_flag" type="checkbox" id="am_async_flag" value="1" <?php checked(1, get_option('am_async_flag', 1)); ?>>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">
-                        <label for="am_files_to_exclude">Resources to exclude</label>
-                    </th>
-                    <td>
-                        <textarea name="am_files_to_exclude" id="am_files_to_exclude" cols="60" rows="5"><?php echo get_option('am_files_to_exclude') ?></textarea>
-                        <div>
-                            <span class="description">Fill in the filename of the resources you don't want to be managed from AssetsMinify, separated by comma. (eg. custom-carousel.js, slideshow.js)</span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="submit">
-            <input type="submit" name="submit" id="submit" class="button button-primary" value="Save" style="margin-right:10px"> <a href="<?php echo admin_url( "options-general.php?page=assets-minify&empty_cache" ) ?>">Empty AssetsMinify's Cache</a>
-        </p>
-    </form>
+	<div class="icon32" id="icon-options-general"><br></div>
+	<h2>AssetsMinify's configuration</h2>
+	<p>&nbsp;</p>
+	<form method="post" action="options.php">
+		<?php settings_fields('am_options_group'); ?>
+		<table class="form-table">
+			<tbody>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_use_compass">Use Compass</label>
+					</th>
+					<td>
+						<input name="am_use_compass" type="checkbox" id="am_use_compass" value="1" <?php checked(1, get_option('am_use_compass')); ?>>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_compass_path">Compass compiler's path</label>
+					</th>
+					<td>
+						<input name="am_compass_path" type="text" id="am_compass_path" value="<?php echo get_option('am_compass_path', '/usr/bin/compass') ?>" class="regular-text">
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_sass_path">Sass compiler's path (required only for .sass format - not .scss)</label>
+					</th>
+					<td>
+						<input name="am_sass_path" type="text" id="am_sass_path" value="<?php echo get_option('am_sass_path', '/usr/bin/sass') ?>" class="regular-text">
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_coffeescript_path">CoffeeScript compiler's path</label>
+					</th>
+					<td>
+						<input name="am_coffeescript_path" type="text" id="am_coffeescript_path" value="<?php echo get_option('am_coffeescript_path', '/usr/bin/coffee') ?>" class="regular-text">
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_compress_styles">Compress styles</label>
+					</th>
+					<td>
+						<input name="am_compress_styles" type="checkbox" id="am_compress_styles" value="1" <?php checked(1, get_option('am_compress_styles', 1)); ?>>
+						<span class="description">Use with care! Some background-images may not be displayed if running a WordPress unusual environment.</span>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_compress_scripts">Compress scripts</label>
+					</th>
+					<td>
+						<input name="am_compress_scripts" type="checkbox" id="am_compress_scripts" value="1" <?php checked(1, get_option('am_compress_scripts', 1)); ?>>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_async_flag">Async attribute on footer's script tag</label>
+					</th>
+					<td>
+						<input name="am_async_flag" type="checkbox" id="am_async_flag" value="1" <?php checked(1, get_option('am_async_flag', 1)); ?>>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_files_to_exclude">Resources to exclude</label>
+					</th>
+					<td>
+						<textarea name="am_files_to_exclude" id="am_files_to_exclude" cols="60" rows="5"><?php echo get_option('am_files_to_exclude') ?></textarea>
+						<div>
+							<span class="description">Fill in the filename of the resources you don't want to be managed from AssetsMinify, separated by comma. (eg. custom-carousel.js, slideshow.js)</span>
+						</div>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_log">Activate Log</label>
+					</th>
+					<td>
+						<input name="am_log" type="checkbox" id="am_log" value="1" <?php checked(1, get_option('am_log')); ?>>
+						<?php
+						$logging = get_option('am_log');
+						if ( $logging === '1' ):
+						?>
+							<span class="description"><?php echo \AssetsMinify\Log::$filename ?> will flush automatically if its weight is 10Mb.</span>
+						<?php endif ?>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="am_dev_mode">Development Mode</label>
+					</th>
+					<td>
+						<input name="am_dev_mode" type="checkbox" id="am_dev_mode" value="1" <?php checked(1, get_option('am_dev_mode')); ?>>
+						<span class="description">If active, the cache will be flushed on every reload. DON'T USE THIS IN PRODUCTION!</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="submit">
+			<input type="submit" name="submit" id="submit" class="button button-primary" value="Save" style="margin-right:10px"> <a href="<?php echo admin_url( "options-general.php?page=assets-minify&empty_cache" ) ?>">Empty AssetsMinify's Cache</a>
+		</p>
+	</form>
 </div>
