@@ -97,7 +97,7 @@ class Css extends Factory {
 
 				$key = "$media-$ext-am-generated";
 				$this->files[$media][$key] = $this->cache->getPath() . $cachefile;
-				$this->mtimes[$media][$key] = filemtime($this->files[$media][$key]);
+				$this->mtimes[$media][$key] = $mtime;
 			}
 		}
 
@@ -105,7 +105,7 @@ class Css extends Factory {
 			return false;
 
 		foreach ( $this->files as $media => $files) {
-			$mtime = md5( json_encode($this->mtimes[$media]) );
+			$mtime = $this->mtimes[$media]["$media-css-am-generated"];
 
 			//Saves the asseticized stylesheets
 			$cachedFilename = "head-$media-$mtime.css";
