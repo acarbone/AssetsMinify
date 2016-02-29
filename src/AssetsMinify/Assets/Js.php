@@ -103,13 +103,13 @@ class Js extends Factory {
 
 			$key = "$ext-am-generated";
 			$this->files[$where][$key] = $this->cache->getPath() . $cachefile;
-			$this->mtimes[$where][$key] = filemtime($this->files[$where][$key]);
+			$this->mtimes[$where][$key] = $mtime;
 		}
 
 		if ( empty($this->files[$where]) )
 			return false;
 
-		$mtime = md5( json_encode($this->mtimes[$where]) );
+		$mtime = $this->mtimes[$where]["js-am-generated"];
 
 		//Saves the asseticized header scripts
 		if ( !$this->cache->fs->has( "$where-$mtime.js" ) ) {
